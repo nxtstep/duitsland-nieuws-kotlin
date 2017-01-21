@@ -1,0 +1,60 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+//
+// Check for outdated dependencies
+// https://github.com/ben-manes/gradle-versions-plugin
+// ./gradlew dependencyUpdates -Drevision=release
+apply plugin: 'com.github.ben-manes.versions'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'me.tatarka:gradle-retrolambda:3.4.0'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+        //
+        // Check for outdated dependencies
+        // https://github.com/ben-manes/gradle-versions-plugin
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.13.0'
+        // Keepsafe DexCount
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.2'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+    
+    plugins.apply('checkstyle')
+    
+    checkstyle {
+        toolVersion = '6.12'
+    }
+    
+    task('checkstyle', type: Checkstyle) {
+        configFile rootProject.file('checkstyle.xml')
+        source 'src/main/java'
+        ignoreFailures false
+        showViolations true
+        include '**/*.java'
+        
+        classpath = files()
+    }
+}
+
+ext {
+    travisBuild = System.getenv("TRAVIS") == "true"
+    // allows for -Dpre-dex=false to be set
+    preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+apply from: rootProject.file('dependencies.gradle')
+apply from: rootProject.file('functions.gradle')

@@ -1,0 +1,3 @@
+rootProject.name = 'duitsland-nieuws-root'
+
+include ':duitsland-nieuws'

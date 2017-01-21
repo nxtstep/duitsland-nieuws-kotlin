@@ -1,0 +1,49 @@
+import java.text.SimpleDateFormat
+
+gradle.allprojects {
+    ext.gitSha = {
+        def p = 'git rev-parse HEAD'.execute([], project.rootDir)
+        p.waitFor()
+        if (p.exitValue() != 0) {
+            throw new RuntimeException(p.errorStream.text)
+        }
+
+        return p.text.trim()
+    }
+
+    ext.gitTimestamp = {
+        def p = 'git log -n 1 --format=%at'.execute([], rootDir)
+        p.waitFor()
+        if (p.exitValue() != 0) {
+            throw new RuntimeException(p.errorStream.text)
+        }
+
+        return p.text.trim()
+    }
+
+    ext.gitLocalRef = {
+        def p = './scripts/git_ref'.execute([], rootDir)
+        p.waitFor()
+        if (p.exitValue() != 0) {
+            throw new RuntimeException(p.errorStream.text)
+        }
+
+        return p.text.trim()
+    }
+
+    ext.gitIsClean = {
+        def p = './scripts/git_clean'.execute([], rootDir)
+        p.waitFor()
+        if (p.exitValue() != 0) {
+            throw new RuntimeException(p.errorStream.text)
+        }
+
+        return p.text.trim()
+    }
+
+    ext.buildTime = {
+        def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        df.setTimeZone(TimeZone.getTimeZone("UTC"))
+        return df.format(new Date())
+    }
+}
