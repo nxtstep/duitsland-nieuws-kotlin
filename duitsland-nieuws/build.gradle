@@ -104,6 +104,10 @@ dependencies {
     //
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.ext.kotlinVersion"
+
+    // RxJava
+    compile "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxJavaVersion"
+
     //
     // SuperSimple
     compile "org.bitbucket.nxtapp.supersimpleandroid:simple-ui:$rootProject.ext.supersimpleVersion"

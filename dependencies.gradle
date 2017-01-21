@@ -2,8 +2,13 @@ ext {
     // App dependencies
     androidSupportVersion = '25.1.0'
     supersimpleVersion = '0.1.7'
+
     // Kotlin
     kotlinVersion = '1.0.6'
+
+    // RxJava
+    rxJavaVersion = '2.0.4'
+
     // test
     androidSupportTest = '0.4.1'
     espressoTestVersion = '2.2.1'
