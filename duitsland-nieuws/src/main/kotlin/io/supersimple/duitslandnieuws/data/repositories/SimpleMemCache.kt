@@ -1,68 +1,68 @@
 package io.supersimple.duitslandnieuws.data.repositories
 
+import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.Single
 
-abstract class SimpleMemCache<T>(val cache: MutableMap<String, T>) {
-    fun list(): Observable<List<T>> {
-        return Observable.create<List<T>> { observer ->
+abstract class SimpleMemCache<K, V>(internal val cache: MutableMap<K, V>) {
+
+    fun get(id: K): Maybe<V> {
+        return Maybe.create { observer ->
+            if (cache.containsKey(id)) {
+                observer.onSuccess(cache[id])
+            }
+            observer.onComplete()
+        }
+    }
+
+    fun list(): Maybe<List<V>> {
+        return Maybe.create<List<V>> { observer ->
             if (cache.isNotEmpty()) {
-                observer.onNext(cache.values.toList())
+                observer.onSuccess(cache.values.toList())
             }
             observer.onComplete()
         }
     }
 
-    fun get(id: String): Observable<T> {
-        return Observable.create { observer ->
-            if (cache.containsKey(id)) {
-                observer.onNext(cache[id])
-            }
-            observer.onComplete()
-        }
-    }
-
-    fun save(value: T): Observable<T> {
-        return Observable.create { observer ->
+    fun save(value: V): Single<V> {
+        return Single.create { observer ->
             cache.put(getId(value), value)
-            observer.onNext(value)
-            observer.onComplete()
+            observer.onSuccess(value)
         }
     }
 
-    fun save(values: List<T>): Observable<List<T>> {
-        return Observable.fromArray(values)
-                .flatMapIterable { it }
-                .flatMap { save(it) }
+    fun save(values: List<V>): Single<List<V>> {
+        return Observable.fromIterable(values)
+                .flatMapSingle { save(it) }
                 .toList()
-                .filter { it.isNotEmpty() }
-                .toObservable()
     }
 
-    fun delete(id: String): Observable<T> {
-        return Observable.create { observer ->
+    fun delete(id: K): Maybe<V> {
+        return Maybe.create { observer ->
             if (cache.containsKey(id)) {
-                observer.onNext(cache.remove(id))
+                observer.onSuccess(cache.remove(id))
             }
             observer.onComplete()
         }
     }
 
-    fun delete(value: T): Observable<T> {
+    @JvmName("deleteObject")
+    fun delete(value: V): Maybe<V> {
         return delete(getId(value))
     }
 
-    fun deleteAll(): Observable<List<T>> {
+    fun deleteAll(): Maybe<List<V>> {
         return list()
-                .flatMapIterable { it }
-                .flatMap { delete(it) }
+                .flatMapObservable { Observable.fromIterable(it) }
+                .map { getId(it) }
+                .flatMapMaybe { delete(it) }
                 .toList()
                 .filter { it.isNotEmpty() }
-                .toObservable()
     }
 
     fun clear(): Unit {
         cache.clear()
     }
 
-    abstract fun getId(value: T): String
+    abstract fun getId(value: V): K
 }

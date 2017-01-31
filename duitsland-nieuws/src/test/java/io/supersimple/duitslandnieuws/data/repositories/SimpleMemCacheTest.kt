@@ -1,6 +1,5 @@
 package io.supersimple.duitslandnieuws.data.repositories
 
-import io.supersimple.duitslandnieuws.data.repositories.SimpleMemCache
 import org.junit.Test
 import java.util.*
 
@@ -10,7 +9,7 @@ class SimpleMemCacheTest {
             val value: String
     )
 
-    class MyCache(val map: MutableMap<String, TestObject>) : SimpleMemCache<TestObject>(map) {
+    class TestCache(val map: MutableMap<String, TestObject>) : SimpleMemCache<String, TestObject>(map) {
         override fun getId(value: TestObject): String {
             return value.id
         }
@@ -18,7 +17,7 @@ class SimpleMemCacheTest {
 
     @Test
     fun testSimpleMemCache() {
-        val cache: SimpleMemCache<TestObject> = MyCache(HashMap<String, TestObject>())
+        val cache: SimpleMemCache<String, TestObject> = TestCache(HashMap<String, TestObject>())
 
         //
         // Save
@@ -79,7 +78,7 @@ class SimpleMemCacheTest {
 
     @Test
     fun testBulkSaveAndDelete() {
-        val cache: SimpleMemCache<TestObject> = MyCache(HashMap<String, TestObject>())
+        val cache: SimpleMemCache<String, TestObject> = TestCache(HashMap<String, TestObject>())
 
         //
         // Bulk save
@@ -98,6 +97,11 @@ class SimpleMemCacheTest {
                 .assertResult(object2)
                 .assertComplete()
 
+        cache.get("2")
+                .test()
+                .assertNoValues()
+                .assertComplete()
+
         cache.deleteAll()
                 .test()
                 .assertResult(Arrays.asList(object1, object3))
@@ -109,9 +113,10 @@ class SimpleMemCacheTest {
                 .assertNoValues()
                 .assertComplete()
 
+        // Saving empty List should complete without error
         cache.save(ArrayList<TestObject>())
                 .test()
-                .assertNoValues()
+                .assertNoErrors()
                 .assertComplete()
     }
 }
