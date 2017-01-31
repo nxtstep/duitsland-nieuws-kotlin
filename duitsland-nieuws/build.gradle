@@ -10,11 +10,15 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.getkeepsafe.dexcount'
 
+kapt {
+    generateStubs = true
+}
+
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "25.0.2"
 
-	packagingOptions {
+    packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
@@ -24,46 +28,47 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
     }
-    
+
     defaultConfig {
         applicationId "io.supersimple.duitslandnieuws"
         minSdkVersion 18
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
-        
+
         buildConfigField 'String', 'GIT_SHA', "\"${gitSha()}\""
         buildConfigField 'long', 'GIT_TIMESTAMP', "${gitTimestamp()}L"
         buildConfigField 'boolean', 'GIT_CLEAN', "${gitIsClean()}"
         buildConfigField 'String', 'GIT_LOCAL_REF', "\"${gitLocalRef()}\""
         buildConfigField 'String', 'BUILD_TIME', "\"${buildTime()}\""
-        
+
         if (travisBuild) {
             buildConfigField 'String', 'TRAVIS_BUILD_NR', '\"' + System.getenv("TRAVIS_BUILD_NUMBER") + '\"'
         }
-        
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    
-	dataBinding {
-		enabled true
-	}
+
+    dataBinding {
+        enabled true
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-    
+
     lintOptions {
         textReport true
         textOutput 'stdout'
         warning 'MissingTranslation'
+        warning 'InvalidPackage'
     }
-    
+
     signingConfigs {
         release {
             storeFile rootProject.file("duitsland-nieuws-release.keystore")
@@ -72,24 +77,24 @@ android {
             keyPassword System.getenv("KEYPWD")
         }
     }
-    
+
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
         }
         qa {
             applicationIdSuffix '.qa'
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            
+
             signingConfig signingConfigs.release
         }
     }
-    
+
     dexOptions {
         // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
         preDexLibraries = preDexEnabled && !travisBuild
@@ -98,41 +103,47 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    
-    compile "com.android.support:appcompat-v7:$rootProject.ext.androidSupportVersion"
-    compile "com.android.support:design:$rootProject.ext.androidSupportVersion"
+
+    compile "com.android.support:appcompat-v7:$androidSupportVersion"
+    compile "com.android.support:design:$androidSupportVersion"
     //
     // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.ext.kotlinVersion"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     // RxJava
-    compile "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxJavaVersion"
+    compile "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+
+    // Requery persistency
+    compile "io.requery:requery:$requeryVersion"
+    compile "io.requery:requery-kotlin:$requeryVersion"
+    compile "io.requery:requery-android:$requeryVersion"
+    kapt "io.requery:requery-processor:$requeryVersion"
 
     //
     // SuperSimple
-    compile "org.bitbucket.nxtapp.supersimpleandroid:simple-ui:$rootProject.ext.supersimpleVersion"
-    
+    compile "org.bitbucket.nxtapp.supersimpleandroid:simple-ui:$supersimpleVersion"
+
     //
     // Test-only dependencies
     // Force usage of support annotations in the test app, since it is internally used by the runner module.
-    androidTestCompile "com.android.support:support-annotations:$rootProject.ext.androidSupportVersion"
-    androidTestCompile "com.android.support.test:runner:$rootProject.ext.androidSupportTest"
+    androidTestCompile "com.android.support:support-annotations:$androidSupportVersion"
+    androidTestCompile "com.android.support.test:runner:$androidSupportTest"
     // Set this dependency to use JUnit 4 rules
-    androidTestCompile "com.android.support.test:rules:$rootProject.ext.androidSupportTest"
+    androidTestCompile "com.android.support.test:rules:$androidSupportTest"
     // Espresso
-    androidTestCompile "com.android.support.test.espresso:espresso-core:$rootProject.ext.espressoTestVersion"
-    androidTestCompile ("com.android.support.test.espresso:espresso-contrib:$rootProject.ext.espressoTestVersion") {
+    androidTestCompile "com.android.support.test.espresso:espresso-core:$espressoTestVersion"
+    androidTestCompile("com.android.support.test.espresso:espresso-contrib:$espressoTestVersion") {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude module: 'support-annotations'
         exclude module: 'recyclerview-v7'
     }
-    androidTestCompile "com.android.support.test.espresso:espresso-intents:$rootProject.ext.espressoTestVersion"
-    
-    testCompile "junit:junit:$rootProject.ext.junitVersion"
+    androidTestCompile "com.android.support.test.espresso:espresso-intents:$espressoTestVersion"
+
+    testCompile "junit:junit:$junitVersion"
     //
     // UnitTest with Robolectric
-    testCompile ("org.robolectric:robolectric:$rootProject.ext.robolectricVersion") {
+    testCompile("org.robolectric:robolectric:$robolectricVersion") {
         exclude module: 'classworlds'
         exclude module: 'commons-logging'
         exclude module: 'httpclient'
@@ -152,14 +163,14 @@ dependencies {
 }
 
 buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		//
-    	// Kotlin
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$rootProject.ext.kotlinVersion"
-	}
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        //
+        // Kotlin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
 }
 
 dexcount {

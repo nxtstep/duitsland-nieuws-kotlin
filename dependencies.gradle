@@ -9,6 +9,9 @@ ext {
     // RxJava
     rxJavaVersion = '2.0.4'
 
+    // Requery
+    requeryVersion = '1.1.1'
+
     // test
     androidSupportTest = '0.4.1'
     espressoTestVersion = '2.2.1'
