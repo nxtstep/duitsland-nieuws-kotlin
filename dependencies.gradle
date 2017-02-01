@@ -1,6 +1,6 @@
 ext {
     // App dependencies
-    androidSupportVersion = '25.1.0'
+    androidSupportVersion = '25.1.1'
     supersimpleVersion = '0.1.7'
 
     // Kotlin
@@ -25,4 +25,6 @@ ext {
     espressoTestVersion = '2.2.1'
     junitVersion = '4.12'
     robolectricVersion = '3.2.2'
+    mockitoVersion = '2.7.1'
+    mockitoKotlinVersion = '1.2.0'
 }

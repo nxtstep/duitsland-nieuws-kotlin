@@ -23,6 +23,29 @@
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable,Signature
 
+-target 1.7
+
+# Android
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+
+-keep public class * extends View {
+public <init>(android.content.Context);
+public <init>(android.content.Context, android.util.AttributeSet);
+public <init>(android.content.Context, android.util.AttributeSet, int);
+public void set*(...);
+}
+
+# Also keep - Enumerations. Keep the special static
+# methods that are required in enumeration classes.
+-keepclassmembers enum  * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
 # Requery
 -dontwarn java.lang.FunctionalInterface
 -dontwarn java.util.**
@@ -59,3 +82,7 @@
 -keepattributes Signature
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
+
+# OkHttp
+-dontwarn okhttp3.**
+-dontwarn okio.**

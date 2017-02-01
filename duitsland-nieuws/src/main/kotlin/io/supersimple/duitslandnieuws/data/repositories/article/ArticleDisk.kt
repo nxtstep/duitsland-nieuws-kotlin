@@ -33,10 +33,11 @@ class ArticleDisk(private val store: KotlinReactiveEntityStore<Persistable>) {
                 .toList()
     }
 
-    fun delete(article: Article): Maybe<Article> = delete(article.id)
+    fun delete(article: Article): Single<Article> = delete(article.id)
 
-    fun delete(id: String): Maybe<Article> {
+    fun delete(id: String): Single<Article> {
         return getDAO(id)
+                .toSingle()
                 .flatMap { deleteArticleDAO(it) }
                 .map { convertFromDb(it) }
     }
@@ -47,10 +48,10 @@ class ArticleDisk(private val store: KotlinReactiveEntityStore<Persistable>) {
                 .single()
     }
 
-    private fun deleteArticleDAO(article: ArticleDAO): Maybe<ArticleDAO> {
+    private fun deleteArticleDAO(article: ArticleDAO): Single<ArticleDAO> {
         return store.delete(article)
-                .toMaybe<ArticleDAO>()
-                .onErrorResumeNext { t: Throwable -> Maybe.just(article) } // TODO: remove this line when Requery merged the Void -> Void? PR
+                .toSingle<ArticleDAO> { article }
+                .onErrorResumeNext { t: Throwable -> Single.just(article) } // TODO: remove this line when Requery (1.1.3) merged the Void -> Void? PR
     }
 
     private fun getDAO(id: String): Maybe<ArticleDAO> {

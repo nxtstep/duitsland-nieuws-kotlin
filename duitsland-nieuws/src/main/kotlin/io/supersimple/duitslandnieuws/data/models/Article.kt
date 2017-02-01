@@ -12,9 +12,17 @@ data class Article(
         val content: RenderableText,
         val excerpt: RenderableText,
         val author: String
-)
+) {
+    companion object {
+        val empty = Article("", Date(0), Date(0), "", "", RenderableText.empty, RenderableText.empty, RenderableText.empty, "")
+    }
+}
 
 data class RenderableText(
         val rendered: String,
         val protected: Boolean
-)
+) {
+    companion object {
+        val empty = RenderableText("", false)
+    }
+}

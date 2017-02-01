@@ -27,6 +27,7 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/rxjava.properties'
     }
 
     defaultConfig {
@@ -168,6 +169,12 @@ dependencies {
         exclude module: 'wagon-file'
         exclude module: 'wagon-http-lightweight'
         exclude module: 'wagon-provider-api'
+    }
+
+    // Mockito
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testCompile ("com.nhaarman:mockito-kotlin:$mockitoKotlinVersion") {
+        exclude group: 'org.mockito', module: 'mockito-core'
     }
 
     // OkHttpClient mocking

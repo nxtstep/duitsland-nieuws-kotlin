@@ -97,12 +97,12 @@ class ArticleDiskTest {
                 .test()
                 .assertValueCount(1)
                 .assertResult(expectedArticle)
-                .assertComplete()
 
         // Get non-existing
         disk.get("test-id-2")
                 .test()
                 .assertNoValues()
+                .assertNoErrors()
                 .assertComplete()
     }
 
@@ -113,9 +113,7 @@ class ArticleDiskTest {
 
         disk.save(article)
                 .test()
-                .assertComplete()
-                .assertValue(article)
-                .assertNoErrors()
+                .assertResult(article)
 
         assertEquals(1, dataStore.select(ArticleDAO::class).get().count())
     }
@@ -175,9 +173,7 @@ class ArticleDiskTest {
         val disk = ArticleDisk(dataStore)
         disk.delete("test-id-1")
                 .test()
-                .assertNoErrors()
-                .assertComplete()
-                .assertValue(expected)
+                .assertResult(expected)
 
         assertEquals(0, dataStore.select(ArticleDAO::class).get().count())
     }
@@ -195,9 +191,7 @@ class ArticleDiskTest {
         val disk = ArticleDisk(dataStore)
         disk.delete(expected)
                 .test()
-                .assertNoErrors()
-                .assertComplete()
-                .assertValue(expected)
+                .assertResult(expected)
 
         assertEquals(0, dataStore.select(ArticleDAO::class).get().count())
     }
@@ -213,6 +207,7 @@ class ArticleDiskTest {
         val disk = ArticleDisk(dataStore)
         disk.deleteAll()
                 .test()
+                .assertValue(3)
                 .assertNoErrors()
                 .assertComplete()
 

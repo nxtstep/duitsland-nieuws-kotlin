@@ -51,13 +51,12 @@ abstract class SimpleMemCache<K, V>(internal val cache: MutableMap<K, V>) {
         return delete(getId(value))
     }
 
-    fun deleteAll(): Maybe<List<V>> {
+    fun deleteAll(): Single<List<V>> {
         return list()
                 .flatMapObservable { Observable.fromIterable(it) }
                 .map { getId(it) }
                 .flatMapMaybe { delete(it) }
                 .toList()
-                .filter { it.isNotEmpty() }
     }
 
     fun clear(): Unit {
