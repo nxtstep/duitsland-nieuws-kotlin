@@ -10,7 +10,7 @@ ext {
     rxJavaVersion = '2.0.4'
 
     // Requery
-    requeryVersion = '1.1.1'
+    requeryVersion = '1.1.2'
 
     // test
     androidSupportTest = '0.4.1'

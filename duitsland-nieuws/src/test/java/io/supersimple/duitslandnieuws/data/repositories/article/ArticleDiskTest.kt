@@ -84,7 +84,9 @@ class ArticleDiskTest {
 
     @Test
     fun testGet() {
-        val modified = Date()
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.MILLISECOND, 0)
+        val modified = calendar.time
         val date = Date(modified.time - 1000 * 3600 * 24)
         insertTestData(dataStore, "test-id-1", date, modified)
 
@@ -162,7 +164,9 @@ class ArticleDiskTest {
 
     @Test
     fun testDelete1() {
-        val modified = Date()
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.MILLISECOND, 0)
+        val modified = calendar.time
         val date = Date(modified.time - 1000 * 3600 * 24)
         insertTestData(dataStore, "test-id-1", date, modified)
 
@@ -180,7 +184,9 @@ class ArticleDiskTest {
 
     @Test
     fun testDelete2() {
-        val modified = Date()
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.MILLISECOND, 0)
+        val modified = calendar.time
         val date = Date(modified.time - 1000 * 3600 * 24)
         insertTestData(dataStore, "test-id-1", date, modified)
 
