@@ -119,6 +119,15 @@ dependencies {
     compile "io.requery:requery-android:$requeryVersion"
     kapt "io.requery:requery-processor:$requeryVersion"
 
+    // GSON
+    compile "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
+
+    // OkHttpClient
+    compile "com.squareup.okhttp3:okhttp:$okHttpVersion"
+    compile "com.squareup.retrofit2:retrofit:$retrofit2Version"
+    compile "com.squareup.retrofit2:converter-gson:$retrofit2Version"
+    compile "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$retrofit2RxJava2Version"
+
     //
     // SuperSimple
     compile "org.bitbucket.nxtapp.supersimpleandroid:simple-ui:$supersimpleVersion"
@@ -160,6 +169,9 @@ dependencies {
         exclude module: 'wagon-http-lightweight'
         exclude module: 'wagon-provider-api'
     }
+
+    // OkHttpClient mocking
+    testCompile "com.squareup.okhttp3:mockwebserver:$okHttpVersion"
 }
 
 buildscript {

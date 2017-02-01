@@ -12,6 +12,14 @@ ext {
     // Requery
     requeryVersion = '1.1.2'
 
+    // GSON
+    gsonVersion = '2.8.0'
+
+    // OkHttp + Retrofit2
+    okHttpVersion = '3.6.0'
+    retrofit2Version = '2.1.0'
+    retrofit2RxJava2Version = '1.0.0'
+
     // test
     androidSupportTest = '0.4.1'
     espressoTestVersion = '2.2.1'
