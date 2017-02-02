@@ -23,48 +23,47 @@ class SimpleMemCacheTest {
         // Save
         cache.save(TestObject("1", "Test me"))
                 .test()
-                .assertNoErrors()
                 .assertResult(TestObject("1", "Test me"))
-                .assertComplete()
 
         //
         // Get
         cache.get("1")
                 .test()
                 .assertResult(TestObject("1", "Test me"))
-                .assertComplete()
 
         cache.get("2")
                 .test()
                 .assertNoValues()
+                .assertNoErrors()
                 .assertComplete()
 
         cache.list()
                 .test()
                 .assertResult(Arrays.asList(TestObject("1", "Test me")))
-                .assertComplete()
 
         //
         // Delete
         cache.delete("2")
                 .test()
                 .assertNoValues()
+                .assertNoErrors()
                 .assertComplete()
 
         cache.delete("1")
                 .test()
                 .assertResult(TestObject("1", "Test me"))
-                .assertComplete()
 
         cache.delete(TestObject("1", "Test me"))
                 .test()
                 .assertNoValues()
+                .assertNoErrors()
                 .assertComplete()
 
         //
         // Clear
         cache.save(TestObject("2", "Whatever value"))
                 .test()
+                .assertValueCount(1)
                 .assertNoErrors()
                 .assertComplete()
 
@@ -73,6 +72,7 @@ class SimpleMemCacheTest {
         cache.list()
                 .test()
                 .assertNoValues()
+                .assertNoErrors()
                 .assertComplete()
     }
 
@@ -90,27 +90,26 @@ class SimpleMemCacheTest {
         cache.save(objects)
                 .test()
                 .assertResult(objects)
-                .assertComplete()
 
         cache.delete(object2)
                 .test()
                 .assertResult(object2)
-                .assertComplete()
 
         cache.get("2")
                 .test()
                 .assertNoValues()
+                .assertNoErrors()
                 .assertComplete()
 
         cache.deleteAll()
                 .test()
                 .assertResult(Arrays.asList(object1, object3))
-                .assertComplete()
 
         // Make sure deleting an empty cache doesn't return a value in the stream
         cache.deleteAll()
                 .test()
-                .assertNoValues()
+                .assertValueCount(1)
+                .assertNoErrors()
                 .assertComplete()
 
         // Saving empty List should complete without error

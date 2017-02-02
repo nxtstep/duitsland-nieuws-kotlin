@@ -22,16 +22,15 @@ class ArticleCacheTest {
         cache.save(article)
                 .test()
                 .assertResult(article)
-                .assertComplete()
 
         cache.delete("art-id-1")
                 .test()
                 .assertResult(article)
-                .assertComplete()
 
         cache.delete("art-id-1")
                 .test()
                 .assertNoValues()
+                .assertNoErrors()
                 .assertComplete()
     }
 }
