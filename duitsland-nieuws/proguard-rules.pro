@@ -68,6 +68,9 @@ public void set*(...);
     public static ** valueOf(java.lang.String);
 }
 
+# Picasso
+-dontwarn com.squareup.okhttp.**
+
 # Bindings
 -dontwarn android.databinding.**
 

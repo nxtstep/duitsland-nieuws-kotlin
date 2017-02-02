@@ -32,7 +32,7 @@ android {
 
     defaultConfig {
         applicationId "io.supersimple.duitslandnieuws"
-        minSdkVersion 18
+        minSdkVersion 23
         targetSdkVersion 25
         versionCode versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -42,6 +42,8 @@ android {
         buildConfigField 'boolean', 'GIT_CLEAN', "${gitIsClean()}"
         buildConfigField 'String', 'GIT_LOCAL_REF', "\"${gitLocalRef()}\""
         buildConfigField 'String', 'BUILD_TIME', "\"${buildTime()}\""
+
+        manifestPlaceholders = [apiBaseUrl: "http://duitslandnieuws.nl/wp-json/wp/v2/"]
 
         if (travisBuild) {
             buildConfigField 'String', 'TRAVIS_BUILD_NR', '\"' + System.getenv("TRAVIS_BUILD_NUMBER") + '\"'
@@ -113,6 +115,7 @@ dependencies {
 
     // RxJava
     compile "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    compile "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
 
     // Requery persistency
     compile "io.requery:requery:$requeryVersion"
@@ -132,6 +135,9 @@ dependencies {
     //
     // SuperSimple
     compile "org.bitbucket.nxtapp.supersimpleandroid:simple-ui:$supersimpleVersion"
+
+    // Picasso image loading
+    compile "com.squareup.picasso:picasso:$picassoVersion"
 
     //
     // Test-only dependencies

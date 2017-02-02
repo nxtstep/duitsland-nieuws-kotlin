@@ -24,7 +24,7 @@ class ArticleRepository(private val cache: ArticleCache,
      * Refresh/Fetch a single Article with [id] from remote Cloud
      * and update local cache and disk
      *
-     * @param Futute for the Article
+     * @param Future for the Article
      */
     fun fetch(id: String): Single<Article> {
         return cloud.get(id)
@@ -48,8 +48,7 @@ class ArticleRepository(private val cache: ArticleCache,
     fun refresh(): Single<List<Article>> {
         return cloud.list()
                 .flatMap({ disk.save(it) })
-                .flatMap({ list ->
-                    cache.deleteAll()
+                .flatMap({ list -> cache.deleteAll()
                             .flatMap({ cache.save(list) })
                 })
     }
