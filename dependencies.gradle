@@ -10,6 +10,9 @@ ext {
     rxJavaVersion = '2.0.5'
     rxAndroidVersion = '2.0.1'
 
+    // Dagger2
+    daggerVersion = '2.9'
+
     // Requery
     requeryVersion = '1.1.2'
 

@@ -10,5 +10,3 @@ inline fun <T> Context.getMetaData(func: Bundle.() -> T): T {
             .metaData
             .func()
 }
-
-fun getApiBaseUrl(context: Context): String = context.getMetaData { getString("API_BASE_URL") }
