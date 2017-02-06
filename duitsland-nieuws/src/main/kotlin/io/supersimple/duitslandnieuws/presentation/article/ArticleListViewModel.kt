@@ -6,10 +6,16 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import io.supersimple.duitslandnieuws.data.models.Article
 import io.supersimple.duitslandnieuws.data.repositories.article.ArticleRepository
+import io.supersimple.duitslandnieuws.di.app.qualifier.IOScheduler
+import io.supersimple.duitslandnieuws.di.app.qualifier.MainScheduler
+import javax.inject.Inject
 
-class ArticleListViewModel(private val articleRepository: ArticleRepository,
-                           private val ioScheduler: Scheduler,
-                           private val mainScheduler: Scheduler) : ObservableArrayList<Article>() {
+class ArticleListViewModel @Inject constructor(private val articleRepository: ArticleRepository,
+                                               @IOScheduler ioScheduler: Scheduler,
+                                               @MainScheduler mainScheduler: Scheduler) : ObservableArrayList<Article>() {
+    private val ioScheduler = ioScheduler
+    private val mainScheduler = mainScheduler
+
     private var subscriptions: CompositeDisposable? = null
     private var articleListView: ArticleListView? = null
 
