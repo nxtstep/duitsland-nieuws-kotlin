@@ -14,15 +14,8 @@ import javax.inject.Inject
 
 
 class ArticleListFragment : ComponentFragment(), ArticleListView {
-    @Inject
-    lateinit var articleListViewModel: ArticleListViewModel
-    lateinit var articleListAdapter: ArticleListAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        articleListAdapter = ArticleListAdapter(articleListViewModel)
-    }
+    @Inject lateinit var articleListViewModel: ArticleListViewModel
+    @Inject lateinit var articleListAdapter: ArticleListAdapter
 
     override fun injectMembers(fragmentComponentBuilder: FragmentComponentBuilderProvider) {
         (fragmentComponentBuilder[ArticleListFragment::class.java] as ArticleListFragmentComponent.Builder) //TODO find a way to do this without casting

@@ -10,9 +10,11 @@ import android.widget.TextView
 import io.supersimple.duitslandnieuws.R
 import io.supersimple.duitslandnieuws.data.models.Article
 import kotlinx.android.synthetic.main.item_article.view.*
+import javax.inject.Inject
 
 
-class ArticleListAdapter(private val articleListViewModel: ArticleListViewModel) : RecyclerView.Adapter<ArticleListAdapter.ViewHolder>() {
+class ArticleListAdapter @Inject constructor(articleListViewModel: ArticleListViewModel) : RecyclerView.Adapter<ArticleListAdapter.ViewHolder>() {
+    private val articleListViewModel = articleListViewModel
 
     val listener = object : ObservableList.OnListChangedCallback<ObservableArrayList<Article>>() {
         override fun onItemRangeChanged(observableList: ObservableArrayList<Article>?, positionStart: Int, itemCount: Int) =
