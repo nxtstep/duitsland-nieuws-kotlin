@@ -9,6 +9,7 @@ import android.widget.Toast
 import io.supersimple.duitslandnieuws.R
 import io.supersimple.duitslandnieuws.di.fragment.FragmentComponentBuilderProvider
 import io.supersimple.duitslandnieuws.presentation.ComponentFragment
+import io.supersimple.duitslandnieuws.presentation.article.adapter.ArticleListAdapter
 import kotlinx.android.synthetic.main.fragment_article_list.*
 import javax.inject.Inject
 

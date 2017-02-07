@@ -1,4 +1,4 @@
-package io.supersimple.duitslandnieuws.presentation.article
+package io.supersimple.duitslandnieuws.presentation.article.adapter
 
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableList
@@ -6,15 +6,20 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import io.supersimple.duitslandnieuws.R
 import io.supersimple.duitslandnieuws.data.models.Article
-import kotlinx.android.synthetic.main.item_article.view.*
+import io.supersimple.duitslandnieuws.presentation.article.ArticleListViewModel
 import javax.inject.Inject
 
 
 class ArticleListAdapter @Inject constructor(articleListViewModel: ArticleListViewModel) : RecyclerView.Adapter<ArticleListAdapter.ViewHolder>() {
     private val articleListViewModel = articleListViewModel
+
+    interface OnArticleClickListener {
+        fun onArticleClicked(articleId: String, position: Int): Unit
+    }
+
+    var onArticleClickListener: OnArticleClickListener? = null
 
     val listener = object : ObservableList.OnListChangedCallback<ObservableArrayList<Article>>() {
         override fun onItemRangeChanged(observableList: ObservableArrayList<Article>?, positionStart: Int, itemCount: Int) =
@@ -38,22 +43,22 @@ class ArticleListAdapter @Inject constructor(articleListViewModel: ArticleListVi
     }
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        val article = articleListViewModel.get(position)
-        holder?.onBind(article, position)
+        val article = articleListViewModel[position]
+        holder?.onBind(article, position, onArticleClickListener)
     }
 
     override fun getItemCount(): Int = articleListViewModel.size
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder =
-            ViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_article, parent, false))
+            ViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.card_article, parent, false))
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val titleTextView: TextView = view.tv_article_title
-        val excerptTextView: TextView = view.tv_article_excerpt
+        val card: ArticleItemLayout = view as ArticleItemLayout
 
-        fun onBind(article: Article, position: Int) {
-            titleTextView.text = article.title.rendered
-            excerptTextView.text = article.excerpt.rendered
+        fun onBind(article: ArticleItemPresentation, position: Int, listener: OnArticleClickListener?) {
+            card.article = article
+            card.position = position
+            card.listener = listener
         }
     }
 }

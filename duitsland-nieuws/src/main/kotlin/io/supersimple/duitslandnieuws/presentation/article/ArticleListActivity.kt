@@ -22,9 +22,7 @@ class ArticleListActivity : ComponentActivity() {
     }
 
     companion object {
-        fun createIntent(context: Context): Intent {
-            val intent = Intent(context, ArticleListActivity::class.java)
-            return intent
-        }
+        fun createIntent(context: Context): Intent =
+                Intent(context, ArticleListActivity::class.java)
     }
 }
