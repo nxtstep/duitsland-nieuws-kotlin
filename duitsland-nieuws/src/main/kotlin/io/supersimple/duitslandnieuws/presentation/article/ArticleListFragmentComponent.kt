@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.Subcomponent
 import io.reactivex.Scheduler
 import io.supersimple.duitslandnieuws.data.repositories.article.ArticleRepository
+import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepository
 import io.supersimple.duitslandnieuws.di.app.qualifier.IOScheduler
 import io.supersimple.duitslandnieuws.di.app.qualifier.MainScheduler
 import io.supersimple.duitslandnieuws.di.fragment.FragmentComponent
@@ -24,8 +25,9 @@ interface ArticleListFragmentComponent : FragmentComponent<ArticleListFragment> 
         @Provides
         @FragmentScope
         fun provideArticleListViewModel(repository: ArticleRepository,
+                                        mediaRepository: MediaRepository,
                                         @IOScheduler ioScheduler: Scheduler,
                                         @MainScheduler mainScheduler: Scheduler) =
-                ArticleListViewModel(repository, ioScheduler, mainScheduler)
+                ArticleListViewModel(repository, mediaRepository, ioScheduler, mainScheduler)
     }
 }

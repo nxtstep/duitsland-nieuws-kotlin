@@ -16,6 +16,9 @@ ext {
     // Requery
     requeryVersion = '1.1.2'
 
+    // PaperParcel
+    paperParcelVersion = '2.0.0-beta2'
+
     // GSON
     gsonVersion = '2.8.0'
 

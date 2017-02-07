@@ -20,6 +20,7 @@ interface ArticleDAO : Persistable {
     @get:Convert(RenderableTextConverter::class)
     val excerpt: RenderableText
     val author: String
+    val featured_media: String
 
     class RenderableTextConverter : Converter<RenderableText, String> {
         companion object {

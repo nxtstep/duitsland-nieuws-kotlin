@@ -72,7 +72,8 @@ class ArticleDisk(private val store: KotlinReactiveEntityStore<Persistable>) {
                     dbArticle.title,
                     dbArticle.content,
                     dbArticle.excerpt,
-                    dbArticle.author)
+                    dbArticle.author,
+                    dbArticle.featured_media)
         }
 
         fun convertToDb(article: Article): ArticleDAO {
@@ -86,6 +87,7 @@ class ArticleDisk(private val store: KotlinReactiveEntityStore<Persistable>) {
             o.setContent(article.content)
             o.setExcerpt(article.excerpt)
             o.setAuthor(article.author)
+            o.setFeatured_media(article.featured_media)
             return o
         }
     }

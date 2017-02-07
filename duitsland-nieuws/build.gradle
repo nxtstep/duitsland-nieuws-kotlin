@@ -8,6 +8,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.getkeepsafe.dexcount'
 
 kapt {
@@ -126,6 +127,11 @@ dependencies {
     compile "io.requery:requery-kotlin:$requeryVersion"
     compile "io.requery:requery-android:$requeryVersion"
     kapt "io.requery:requery-processor:$requeryVersion"
+
+    // PaperParcel
+    compile "nz.bradcampbell:paperparcel:$paperParcelVersion"
+    compile "nz.bradcampbell:paperparcel-kotlin:$paperParcelVersion"
+    kapt "nz.bradcampbell:paperparcel-compiler:$paperParcelVersion"
 
     // GSON
     compile "com.google.code.gson:gson:$rootProject.ext.gsonVersion"

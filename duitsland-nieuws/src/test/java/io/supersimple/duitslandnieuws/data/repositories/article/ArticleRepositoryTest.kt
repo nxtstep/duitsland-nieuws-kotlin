@@ -16,9 +16,11 @@ class ArticleRepositoryTest {
     lateinit var mockDisk: ArticleDisk
     lateinit var mockCloud: ArticleCloud
 
-    val article = Article("1", Date(), Date(), "MySlug", "http://www.duitslandnieuws.de",
-            RenderableText("title", true), RenderableText("Content", false),
-            RenderableText("Excerpt", false), "Author")
+    companion object {
+        val testArticle = Article("1", Date(), Date(), "MySlug", "http://www.duitslandnieuws.de",
+                RenderableText("title", true), RenderableText("Content", false),
+                RenderableText("Excerpt", false), "Author", "media-id")
+    }
 
     @Test
     fun testGet() {
@@ -29,17 +31,17 @@ class ArticleRepositoryTest {
             }
         }
         mockDisk = mock {
-            on { get(anyString()) } doReturn Maybe.just(article)
+            on { get(anyString()) } doReturn Maybe.just(testArticle)
         }
         mockCloud = mock {}
 
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
         articleRepo.get("test-id")
                 .test()
-                .assertResult(article)
+                .assertResult(testArticle)
 
         verify(mockCache, times(1)).get(eq("test-id"))
-        verify(mockCache, times(1)).save(eq(article))
+        verify(mockCache, times(1)).save(eq(testArticle))
         verify(mockDisk, times(1)).get(eq("test-id"))
         verify(mockCloud, never()).get(anyString())
     }
@@ -59,18 +61,18 @@ class ArticleRepositoryTest {
             }
         }
         mockCloud = mock {
-            on { get(anyString()) } doReturn Single.just(article)
+            on { get(anyString()) } doReturn Single.just(testArticle)
         }
 
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
         articleRepo.fetch("id-1")
                 .test()
-                .assertResult(article)
+                .assertResult(testArticle)
 
         verify(mockCache, never()).get(anyString())
-        verify(mockCache, times(1)).save(eq(article))
+        verify(mockCache, times(1)).save(eq(testArticle))
         verify(mockDisk, never()).get(anyString())
-        verify(mockDisk, times(1)).save(eq(article))
+        verify(mockDisk, times(1)).save(eq(testArticle))
     }
 
     @Test
@@ -82,7 +84,7 @@ class ArticleRepositoryTest {
             }
         }
         mockDisk = mock {
-            on { list(anyInt()) } doReturn Maybe.just(Arrays.asList(article))
+            on { list(anyInt()) } doReturn Maybe.just(Arrays.asList(testArticle))
         }
         mockCloud = mock {
         }
@@ -90,7 +92,7 @@ class ArticleRepositoryTest {
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
         articleRepo.list()
                 .test()
-                .assertResult(Arrays.asList(article))
+                .assertResult(Arrays.asList(testArticle))
 
         verify(mockCache, times(1)).list()
         verify(mockCache, times(1)).save(any<List<Article>>())
@@ -113,13 +115,13 @@ class ArticleRepositoryTest {
             }
         }
         mockCloud = mock {
-            on { list() } doReturn Single.just(Arrays.asList(article))
+            on { list() } doReturn Single.just(Arrays.asList(testArticle))
         }
 
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
         articleRepo.refresh()
                 .test()
-                .assertResult(Arrays.asList(article))
+                .assertResult(Arrays.asList(testArticle))
 
         verify(mockCache, never()).list()
         verify(mockCache, times(1)).save(any<List<Article>>())
@@ -143,12 +145,12 @@ class ArticleRepositoryTest {
         mockCloud = mock {}
 
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
-        articleRepo.save(article)
+        articleRepo.save(testArticle)
                 .test()
-                .assertResult(article)
+                .assertResult(testArticle)
 
-        verify(mockCache, times(1)).save(eq(article))
-        verify(mockDisk, times(1)).save(eq(article))
+        verify(mockCache, times(1)).save(eq(testArticle))
+        verify(mockDisk, times(1)).save(eq(testArticle))
     }
 
     @Test
@@ -166,18 +168,18 @@ class ArticleRepositoryTest {
         mockCloud = mock {}
 
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
-        articleRepo.delete(article)
+        articleRepo.delete(testArticle)
                 .test()
-                .assertResult(article)
+                .assertResult(testArticle)
 
-        verify(mockCache, times(1)).delete(eq(article))
-        verify(mockDisk, times(1)).delete(eq(article))
+        verify(mockCache, times(1)).delete(eq(testArticle))
+        verify(mockDisk, times(1)).delete(eq(testArticle))
     }
 
     @Test
     fun testClearCaches() {
         mockCache = mock {
-            on { deleteAll() } doReturn Single.just(Arrays.asList(article))
+            on { deleteAll() } doReturn Single.just(Arrays.asList(testArticle))
         }
         mockDisk = mock {}
         mockCloud = mock {}

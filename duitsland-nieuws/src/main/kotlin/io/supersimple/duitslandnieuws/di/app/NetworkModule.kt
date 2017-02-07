@@ -7,6 +7,7 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import io.supersimple.duitslandnieuws.data.api.ArticleEndpoint
+import io.supersimple.duitslandnieuws.data.api.MediaEndpoint
 import io.supersimple.duitslandnieuws.di.app.qualifier.BaseUrl
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -43,4 +44,9 @@ class NetworkModule {
     @Singleton
     fun provideArticleEndpoint(retrofit: Retrofit): ArticleEndpoint =
             retrofit.create(ArticleEndpoint::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMediaEndpoint(retrofit: Retrofit): MediaEndpoint =
+            retrofit.create(MediaEndpoint::class.java)
 }
