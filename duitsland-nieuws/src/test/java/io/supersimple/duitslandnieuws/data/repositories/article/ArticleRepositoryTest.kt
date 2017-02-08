@@ -78,7 +78,7 @@ class ArticleRepositoryTest {
     @Test
     fun testList() {
         mockCache = mock {
-            on { list() } doReturn Maybe.empty()
+            on { list(anyInt(), anyInt()) } doReturn Maybe.empty()
             on { save(any<List<Article>>()) }.thenAnswer {
                 Single.just(it.arguments[0])
             }
@@ -98,7 +98,7 @@ class ArticleRepositoryTest {
                 .test()
                 .assertResult(Arrays.asList(testArticle))
 
-        verify(mockCache, times(1)).list()
+        verify(mockCache, times(1)).list(anyInt(), anyInt())
         verify(mockCache, times(1)).save(any<List<Article>>())
         verify(mockDisk, times(1)).list(anyInt(), anyInt())
     }
@@ -106,7 +106,7 @@ class ArticleRepositoryTest {
     @Test
     fun testListNextPage() {
         mockCache = mock {
-            on { list() } doReturn Maybe.empty()
+            on { list(anyInt(), anyInt()) } doReturn Maybe.empty()
             on { save(any<List<Article>>()) }.thenAnswer {
                 Single.just(it.arguments[0])
             }
@@ -126,7 +126,7 @@ class ArticleRepositoryTest {
                 .test()
                 .assertResult(Arrays.asList(testArticle))
 
-        verify(mockCache, times(1)).list()
+        verify(mockCache, times(1)).list(anyInt(), anyInt())
         verify(mockCache, times(1)).save(any<List<Article>>())
         verify(mockDisk, times(1)).list(anyInt(), anyInt())
         verify(mockDisk, times(1)).save(any<List<Article>>())
@@ -135,7 +135,7 @@ class ArticleRepositoryTest {
     @Test
     fun testRefresh() {
         mockCache = mock {
-            on { list() } doReturn Maybe.empty()
+            on { list(anyInt(), anyInt()) } doReturn Maybe.empty()
             on { deleteAll() } doReturn Single.just(Collections.emptyList())
             on { save(any<List<Article>>()) }.thenAnswer {
                 Single.just(it.arguments[0])
@@ -156,7 +156,7 @@ class ArticleRepositoryTest {
                 .test()
                 .assertResult(Arrays.asList(testArticle))
 
-        verify(mockCache, never()).list()
+        verify(mockCache, never()).list(anyInt(), anyInt())
         verify(mockCache, times(1)).save(any<List<Article>>())
         verify(mockCache, times(1)).deleteAll()
         verify(mockDisk, never()).list(anyInt(), anyInt())

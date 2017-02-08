@@ -98,7 +98,30 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
     }
 
     fun refresh() {
-        //TODO
+        page = 0
+        pendingPage = page
+        subscriptions!!.add(
+                articleRepository.refresh(PAGE_SIZE)
+                        .toObservable()
+                        .flatMapIterable({ it })
+                        .flatMapMaybe({ mergeWithMedia(it) })
+                        .flatMapMaybe({ convertToPresentation(it) })
+                        .toList()
+                        .doOnSubscribe({ stateSubject.onNext(ArticleListLoadingState.LOADING) })
+                        .doOnSuccess({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
+                        .subscribeOn(ioScheduler)
+                        .observeOn(mainScheduler)
+                        .subscribe(
+                                { list ->
+                                    clear()
+                                    addAll(list)
+                                    articleListView?.showArticleListLoaded(++page)
+                                },
+                                { error ->
+                                    articleListView?.showError()
+                                    error.printStackTrace()
+                                })
+        )
     }
 
     private fun mergeWithMedia(article: Article): Maybe<Pair<Article, Media>> {

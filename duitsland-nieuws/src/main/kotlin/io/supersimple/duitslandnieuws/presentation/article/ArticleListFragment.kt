@@ -42,6 +42,8 @@ class ArticleListFragment : ComponentFragment(), ArticleListView {
 
         rv_article_list.layoutManager = LinearLayoutManager(view?.context)
         rv_article_list.adapter = articleListAdapter
+
+        swipe_refresh_layout.setOnRefreshListener { articleListViewModel.refresh() }
     }
 
     override fun onStart() {
@@ -55,18 +57,19 @@ class ArticleListFragment : ComponentFragment(), ArticleListView {
     }
 
     override fun showLoadingIndicator(flag: Boolean) {
-        Toast.makeText(context, "Loading $flag", Toast.LENGTH_LONG).show()
+        swipe_refresh_layout.isRefreshing = flag
     }
 
     override fun showEmptyState() {
-        Toast.makeText(context, "Empty", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Empty", Toast.LENGTH_SHORT).show()
     }
 
     override fun showError() {
-        Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
+        swipe_refresh_layout.isRefreshing = false
+        Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
     }
 
     override fun showArticleListLoaded(page: Int) {
-        Toast.makeText(context, "Loaded page: $page", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Loaded page: $page", Toast.LENGTH_SHORT).show()
     }
 }
