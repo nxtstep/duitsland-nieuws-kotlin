@@ -6,13 +6,16 @@ import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import dagger.Module
 import dagger.Provides
+import io.supersimple.duitslandnieuws.BuildConfig
 import io.supersimple.duitslandnieuws.data.api.ArticleEndpoint
 import io.supersimple.duitslandnieuws.data.api.MediaEndpoint
 import io.supersimple.duitslandnieuws.di.app.qualifier.BaseUrl
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+
 
 @Module
 class NetworkModule {
@@ -30,11 +33,22 @@ class NetworkModule {
                     .create()
 
     @Provides
+    fun provideHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        if (BuildConfig.DEBUG) {
+            val logging = HttpLoggingInterceptor()
+            logging.level = HttpLoggingInterceptor.Level.BASIC
+            builder.addInterceptor(logging)
+        }
+        return builder.build()
+    }
+
+    @Provides
     @Singleton
-    fun provideRetrofit(@BaseUrl baseUrl: String, gsonConverter: Gson): Retrofit =
+    fun provideRetrofit(@BaseUrl baseUrl: String, gsonConverter: Gson, httpClient: OkHttpClient): Retrofit =
             Retrofit.Builder()
                     .baseUrl(baseUrl)
-                    .client(OkHttpClient())
+                    .client(httpClient)
                     .addConverterFactory(GsonConverterFactory.create(gsonConverter))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build()

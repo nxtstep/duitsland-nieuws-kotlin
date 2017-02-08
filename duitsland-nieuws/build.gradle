@@ -138,6 +138,7 @@ dependencies {
 
     // OkHttpClient
     compile "com.squareup.okhttp3:okhttp:$okHttpVersion"
+    compile "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
     compile "com.squareup.retrofit2:retrofit:$retrofit2Version"
     compile "com.squareup.retrofit2:converter-gson:$retrofit2Version"
     compile "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$retrofit2RxJava2Version"

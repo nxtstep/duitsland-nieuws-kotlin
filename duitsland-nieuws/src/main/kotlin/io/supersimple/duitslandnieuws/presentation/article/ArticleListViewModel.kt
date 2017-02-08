@@ -19,6 +19,16 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
                            private val ioScheduler: Scheduler,
                            private val mainScheduler: Scheduler) : ObservableArrayList<ArticleItemPresentation>() {
 
+    companion object {
+        const val DATE_FORMAT = "H:mm - d MMMM yyyy"
+    }
+
+    enum class ArticleListLoadingState {
+        LOADING,
+        FINISHED,
+        ERROR
+    }
+
     private var subscriptions: CompositeDisposable? = null
     private var articleListView: ArticleListView? = null
 
@@ -86,15 +96,5 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
     private fun convertToPresentation(pair: Pair<Article, Media>): Maybe<ArticleItemPresentation> {
         return Maybe.just(pair)
                 .map({ ArticleItemPresentation.from(it.first, it.second, dateFormatter) })
-    }
-
-    companion object {
-        const val DATE_FORMAT = "H:mm - d MMMM yyyy"
-    }
-
-    enum class ArticleListLoadingState {
-        LOADING,
-        FINISHED,
-        ERROR
     }
 }
