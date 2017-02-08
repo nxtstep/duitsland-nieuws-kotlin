@@ -45,12 +45,21 @@ class ArticleListAdapter @Inject constructor(articleListViewModel: ArticleListVi
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val article = articleListViewModel[position]
         holder?.onBind(article, position, onArticleClickListener)
+
+        // Check for load more
+        if (itemCount - position < THRESHOLD_LOAD_MORE) {
+            articleListViewModel.loadNextPage()
+        }
     }
 
     override fun getItemCount(): Int = articleListViewModel.size
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder =
             ViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.card_article, parent, false))
+
+    companion object {
+        const val THRESHOLD_LOAD_MORE = 2
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val card: ArticleItemLayout = view as ArticleItemLayout

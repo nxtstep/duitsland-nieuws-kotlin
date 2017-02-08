@@ -16,8 +16,8 @@ abstract class ComponentActivity : AppCompatActivity(), FragmentComponentBuilder
             Map<Class<out Fragment>, @JvmSuppressWildcards Provider<FragmentComponentBuilder<*, *>>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setupActivityComponent()
+        super.onCreate(savedInstanceState)
     }
 
     protected fun setupActivityComponent() {

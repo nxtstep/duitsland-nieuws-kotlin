@@ -84,19 +84,52 @@ class ArticleRepositoryTest {
             }
         }
         mockDisk = mock {
-            on { list(anyInt()) } doReturn Maybe.just(Arrays.asList(testArticle))
+            on { list(anyInt(), anyInt()) } doReturn Maybe.just(Arrays.asList(testArticle))
+            on { save(any<List<Article>>()) }.thenAnswer {
+                Single.just(it.arguments[0])
+            }
         }
         mockCloud = mock {
+            on { list(anyInt(), anyInt()) } doReturn Single.error(IllegalStateException("Should not be called"))
         }
 
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
-        articleRepo.list()
+        articleRepo.list(0, 10)
                 .test()
                 .assertResult(Arrays.asList(testArticle))
 
         verify(mockCache, times(1)).list()
         verify(mockCache, times(1)).save(any<List<Article>>())
-        verify(mockDisk, times(1)).list(anyInt())
+        verify(mockDisk, times(1)).list(anyInt(), anyInt())
+    }
+
+    @Test
+    fun testListNextPage() {
+        mockCache = mock {
+            on { list() } doReturn Maybe.empty()
+            on { save(any<List<Article>>()) }.thenAnswer {
+                Single.just(it.arguments[0])
+            }
+        }
+        mockDisk = mock {
+            on { list(anyInt(), anyInt()) } doReturn Maybe.empty()
+            on { save(any<List<Article>>()) }.thenAnswer {
+                Single.just(it.arguments[0])
+            }
+        }
+        mockCloud = mock {
+            on { list(anyInt(), anyInt()) } doReturn Single.just(Arrays.asList(testArticle))
+        }
+
+        val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
+        articleRepo.list(1, 10)
+                .test()
+                .assertResult(Arrays.asList(testArticle))
+
+        verify(mockCache, times(1)).list()
+        verify(mockCache, times(1)).save(any<List<Article>>())
+        verify(mockDisk, times(1)).list(anyInt(), anyInt())
+        verify(mockDisk, times(1)).save(any<List<Article>>())
     }
 
     @Test
@@ -109,24 +142,24 @@ class ArticleRepositoryTest {
             }
         }
         mockDisk = mock {
-            on { list(anyInt()) } doReturn Maybe.empty()
+            on { list(anyInt(), anyInt()) } doReturn Maybe.empty()
             on { save(any<List<Article>>()) }.thenAnswer {
                 Single.just(it.arguments[0])
             }
         }
         mockCloud = mock {
-            on { list() } doReturn Single.just(Arrays.asList(testArticle))
+            on { list(anyInt(), anyInt()) } doReturn Single.just(Arrays.asList(testArticle))
         }
 
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
-        articleRepo.refresh()
+        articleRepo.refresh(10)
                 .test()
                 .assertResult(Arrays.asList(testArticle))
 
         verify(mockCache, never()).list()
         verify(mockCache, times(1)).save(any<List<Article>>())
         verify(mockCache, times(1)).deleteAll()
-        verify(mockDisk, never()).list(anyInt())
+        verify(mockDisk, never()).list(anyInt(), anyInt())
         verify(mockDisk, times(1)).save(any<List<Article>>())
     }
 

@@ -17,9 +17,11 @@ class ArticleDisk(private val store: KotlinReactiveEntityStore<Persistable>) {
             .flatMap { store.upsert(it) }
             .map { convertFromDb(it) }
 
-    fun list(limit: Int = 100): Maybe<List<Article>> {
+    fun list(page: Int, pageSize: Int): Maybe<List<Article>> {
         return store.select(ArticleDAO::class)
-                .orderBy(ArticleDAOEntity.DATE.desc()).limit(limit)
+                .orderBy(ArticleDAOEntity.DATE.desc())
+                .limit(pageSize)
+                .offset(page * pageSize)
                 .get()
                 .observable()
                 .map { convertFromDb(it) }

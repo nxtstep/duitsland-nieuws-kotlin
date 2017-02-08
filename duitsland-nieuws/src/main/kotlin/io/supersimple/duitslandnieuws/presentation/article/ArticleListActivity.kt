@@ -12,6 +12,12 @@ class ArticleListActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_article_list)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.container_main, ArticleListFragment.createFragment(), ArticleListFragment.TAG)
+                    .commit()
+        }
     }
 
     override fun injectMembers(activityComponentBuilder: ActivityComponentBuilderProvider) {

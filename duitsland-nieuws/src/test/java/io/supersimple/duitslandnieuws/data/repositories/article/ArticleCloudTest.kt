@@ -61,7 +61,7 @@ class ArticleCloudTest : AbsUnitTestRestApiTestCase() {
     @Test
     fun testList() {
         val cloud = ArticleCloud(networkService)
-        cloud.list()
+        cloud.list(0, 10)
                 .test()
                 .assertComplete()
                 .assertNoErrors()

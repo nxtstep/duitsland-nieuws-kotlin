@@ -35,18 +35,24 @@ class ArticleRepository(private val cache: ArticleCache,
     /**
      * Get articles from local resource: Cache or Disk
      */
-    fun list(): Maybe<List<Article>> {
-        return cache.list()
-                .switchIfEmpty(disk.list()
-                        .flatMap({ cache.save(it).toMaybe() }))
+    fun list(page: Int, pageSize: Int): Maybe<List<Article>> {
+        return cache.list(page, pageSize)
+                .switchIfEmpty(disk.list(page, pageSize)
+                        .flatMap({ cache.save(it).toMaybe() })
+                        .switchIfEmpty(cloud.list(page, pageSize)
+                                .flatMap({ disk.save(it) })
+                                .flatMap({ cache.save(it) })
+                                .toMaybe()
+                        )
+                )
     }
 
     /**
      * Get articles from remote Cloud
      * and update local cache and disk
      */
-    fun refresh(): Single<List<Article>> {
-        return cloud.list()
+    fun refresh(pageSize: Int): Single<List<Article>> {
+        return cloud.list(0, pageSize)
                 .flatMap({ disk.save(it) })
                 .flatMap({ list -> cache.deleteAll()
                             .flatMap({ cache.save(list) })

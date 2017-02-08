@@ -132,7 +132,7 @@ class ArticleDiskTest {
         insertTestData(dataStore, "test-id-3", date, modified)
 
         val disk = ArticleDisk(dataStore)
-        disk.list()
+        disk.list(0, 10)
                 .test()
                 .assertNoErrors()
                 .assertValue {
@@ -140,6 +140,12 @@ class ArticleDiskTest {
                             it[1].id == "test-id-1" &&
                             it[2].id == "test-id-3"
                 }
+                .assertComplete()
+
+        disk.list(1, 10)
+                .test()
+                .assertNoErrors()
+                .assertNoValues()
                 .assertComplete()
     }
 

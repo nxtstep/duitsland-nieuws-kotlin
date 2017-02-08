@@ -18,6 +18,11 @@ class ArticleListFragment : ComponentFragment(), ArticleListView {
     @Inject lateinit var articleListViewModel: ArticleListViewModel
     @Inject lateinit var articleListAdapter: ArticleListAdapter
 
+    companion object {
+        val TAG = ArticleListFragment::class.java.simpleName
+        fun createFragment(): ArticleListFragment = ArticleListFragment()
+    }
+
     override fun injectMembers(fragmentComponentBuilder: FragmentComponentBuilderProvider) {
         (fragmentComponentBuilder[ArticleListFragment::class.java] as ArticleListFragmentComponent.Builder) //TODO find a way to do this without casting
                 .fragmentModule(ArticleListFragmentComponent.ArticleListModule(this))

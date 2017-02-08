@@ -56,10 +56,12 @@ class ArticleItemLayout : LinearLayout {
             pubDateTextView.text = field?.pubDate
 
             field?.imageUrl?.let {
+                imageView.visibility = VISIBLE
                 Picasso.with(context).load(Uri.parse(it)).into(imageView)
             }
             if (field?.imageUrl == null) {
                 imageView.setImageResource(0)
+                imageView.visibility = GONE
             }
         }
     var position: Int = -1
