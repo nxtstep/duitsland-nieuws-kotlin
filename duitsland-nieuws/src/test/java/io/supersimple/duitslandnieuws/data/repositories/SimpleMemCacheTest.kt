@@ -37,9 +37,15 @@ class SimpleMemCacheTest {
                 .assertNoErrors()
                 .assertComplete()
 
-        cache.list()
+        cache.list(0, 1)
                 .test()
                 .assertResult(Arrays.asList(TestObject("1", "Test me")))
+
+        cache.list(0, 10)
+                .test()
+                .assertNoValues()
+                .assertComplete()
+                .assertNoErrors()
 
         //
         // Delete
@@ -69,7 +75,7 @@ class SimpleMemCacheTest {
 
         cache.clear()
 
-        cache.list()
+        cache.list(0, 1)
                 .test()
                 .assertNoValues()
                 .assertNoErrors()

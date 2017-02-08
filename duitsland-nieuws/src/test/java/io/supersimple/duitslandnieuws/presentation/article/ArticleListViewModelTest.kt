@@ -11,6 +11,7 @@ import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepository
 import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepositoryTest.Companion.testMediaItem
 import org.junit.Test
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.anyInt
 import java.util.*
 
 class ArticleListViewModelTest {
@@ -29,23 +30,24 @@ class ArticleListViewModelTest {
     @Test
     fun testArticleListViewModel_list() {
         mockRepository = mock {
-            on { list() } doReturn Maybe.just(articleList)
-            on { refresh() } doReturn Single.error(IllegalStateException("Refresh should not be called in test"))
+            on { list(anyInt(), anyInt()) } doReturn Maybe.just(articleList)
+            on { refresh(anyInt()) } doReturn Single.error(IllegalStateException("Refresh should not be called in test"))
         }
         mockMediaRepository = mock {
             on { get(ArgumentMatchers.anyString()) } doReturn Maybe.just(testMediaItem)
         }
         val mockView: ArticleListView = mock {}
+
         val testScheduler = TestScheduler()
         val viewModel = ArticleListViewModel(mockRepository, mockMediaRepository, testScheduler, testScheduler)
         viewModel.bindView(mockView)
 
         testScheduler.triggerActions()
 
-        verify(mockRepository, times(1)).list()
+        verify(mockRepository, times(1)).list(anyInt(), anyInt())
         verify(mockMediaRepository, times(1)).get(eq("media-id"))
 
-        verify(mockView, times(1)).showArticleListLoaded(eq(1))
+        verify(mockView, times(1)).showArticleListLoaded(eq(0))
         verify(mockView, times(1)).showLoadingIndicator(eq(true))
         verify(mockView, times(1)).showLoadingIndicator(eq(false))
         verify(mockView, never()).showEmptyState()

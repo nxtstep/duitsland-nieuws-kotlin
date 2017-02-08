@@ -1,10 +1,8 @@
 package io.supersimple.duitslandnieuws.data.repositories.media
 
-import io.supersimple.duitslandnieuws.data.models.Media
-import io.supersimple.duitslandnieuws.data.models.MediaDetails
-import io.supersimple.duitslandnieuws.data.models.MediaItem
-import io.supersimple.duitslandnieuws.data.models.RenderableText
 import io.supersimple.duitslandnieuws.data.parcel.writeParcelable
+import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepositoryTest.Companion.testMediaId
+import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepositoryTest.Companion.testMediaItem
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -14,7 +12,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import java.io.File
-import java.util.*
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
@@ -115,14 +112,4 @@ class MediaDiskTest {
         assertFalse(mediaItemFile2.exists())
     }
 
-    companion object {
-        const val testMediaId = "10"
-        val testSizes: HashMap<String, MediaItem> by lazy {
-            val map = HashMap<String, MediaItem>()
-            map["key"] = MediaItem("thumbnail file", 2, 5, "image/png", "http://www.images.com/image-url.png")
-            map
-        }
-        val testDetails by lazy { MediaDetails(15, 20, "filename-10.jpg", testSizes) }
-        val testMediaItem by lazy { Media(testMediaId, Date(), RenderableText("Title disk"), "405", "no slug", RenderableText("Caption for disk"), testDetails) }
-    }
 }

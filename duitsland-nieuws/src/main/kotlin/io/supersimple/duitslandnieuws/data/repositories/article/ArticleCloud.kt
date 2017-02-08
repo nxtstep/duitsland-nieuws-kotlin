@@ -5,11 +5,8 @@ import io.supersimple.duitslandnieuws.data.api.ArticleEndpoint
 import io.supersimple.duitslandnieuws.data.models.Article
 
 class ArticleCloud(private val articleService: ArticleEndpoint) {
-    fun list(): Single<List<Article>> {
-        return articleService.list()
-    }
+    fun list(page: Int, pageSize: Int): Single<List<Article>> =
+            articleService.list((page + 1).toString(), pageSize)
 
-    fun get(id: String): Single<Article> {
-        return articleService.get(id)
-    }
+    fun get(id: String): Single<Article> = articleService.get(id)
 }

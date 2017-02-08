@@ -21,6 +21,8 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
 
     companion object {
         const val DATE_FORMAT = "H:mm - d MMMM yyyy"
+
+        const val PAGE_SIZE = 10
     }
 
     enum class ArticleListLoadingState {
@@ -35,6 +37,8 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
 
     private val stateSubject = PublishSubject.create<ArticleListLoadingState>()
+    private var page = -1
+    private var pendingPage = -1
 
     fun bindView(view: ArticleListView) {
         subscriptions?.dispose()
@@ -49,9 +53,29 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
                         })
         )
 
+        if (page == -1) {
+            loadFirstPage()
+        }
+    }
+
+    fun unbind() {
+        subscriptions?.dispose()
+        articleListView = null
+    }
+
+    fun loadFirstPage() {
+        page = 0
+        loadNextPage()
+    }
+
+    fun loadNextPage() {
+        if (pendingPage == page) {
+            return
+        }
+        pendingPage = page
         subscriptions!!.add(
-                articleRepository.list()
-                        .switchIfEmpty(articleRepository.refresh().toMaybe())
+                articleRepository.list(page, PAGE_SIZE)
+                        .switchIfEmpty(articleRepository.refresh(PAGE_SIZE).toMaybe())
                         .toObservable()
                         .flatMapIterable({ it })
                         .flatMapMaybe({ mergeWithMedia(it) })
@@ -64,22 +88,13 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
                         .subscribe(
                                 { list ->
                                     addAll(list)
-                                    articleListView?.showArticleListLoaded(1)
+                                    articleListView?.showArticleListLoaded(++page)
                                 },
                                 { error ->
                                     articleListView?.showError()
                                     error.printStackTrace()
                                 })
         )
-    }
-
-    fun unbind() {
-        subscriptions?.dispose()
-        articleListView = null
-    }
-
-    fun loadNextPage() {
-        //TODO
     }
 
     fun refresh() {
@@ -89,6 +104,7 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
     private fun mergeWithMedia(article: Article): Maybe<Pair<Article, Media>> {
         return Maybe.just(article)
                 .zipWith(mediaRepository.get(article.featured_media)
+                        .onErrorComplete()
                         .defaultIfEmpty(Media.empty)
                         , BiFunction { t1, t2 -> Pair(t1, t2) })
     }
