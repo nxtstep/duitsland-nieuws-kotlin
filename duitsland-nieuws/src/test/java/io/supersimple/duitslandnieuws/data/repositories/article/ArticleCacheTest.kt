@@ -17,7 +17,8 @@ class ArticleCacheTest {
                 RenderableText("Rendered Title text", false),
                 RenderableText("Rendered content text", true),
                 RenderableText("Rendered excerpt text", true),
-                "author-id-1")
+                "author-id-1",
+                "media-id")
 
         cache.save(article)
                 .test()

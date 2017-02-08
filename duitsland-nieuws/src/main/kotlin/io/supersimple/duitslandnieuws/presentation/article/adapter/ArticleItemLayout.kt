@@ -2,11 +2,13 @@ package io.supersimple.duitslandnieuws.presentation.article.adapter
 
 import android.annotation.TargetApi
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.card_article.view.*
 
 class ArticleItemLayout : LinearLayout {
@@ -52,6 +54,13 @@ class ArticleItemLayout : LinearLayout {
             titleTextView.text = field?.title
             excerptTextView.text = field?.excerpt
             pubDateTextView.text = field?.pubDate
+
+            field?.imageUrl?.let {
+                Picasso.with(context).load(Uri.parse(it)).into(imageView)
+            }
+            if (field?.imageUrl == null) {
+                imageView.setImageResource(0)
+            }
         }
     var position: Int = -1
 }

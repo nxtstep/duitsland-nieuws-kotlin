@@ -35,7 +35,8 @@ class ArticleDiskTest {
                            title: RenderableText = RenderableText("Title rendering", false),
                            content: RenderableText = RenderableText("Content rendering", true),
                            excerpt: RenderableText = RenderableText("Excerpt rendering", true),
-                           author: String = "Author"): ArticleDAO {
+                           author: String = "Author",
+                           media: String = "media-id"): ArticleDAO {
             val article = ArticleDAOEntity()
             article.setId(id)
             article.setDate(date)
@@ -46,6 +47,7 @@ class ArticleDiskTest {
             article.setContent(content)
             article.setExcerpt(excerpt)
             article.setAuthor(author)
+            article.setFeatured_media(media)
 
             return article
         }
@@ -58,8 +60,9 @@ class ArticleDiskTest {
                         title: RenderableText = RenderableText("Title rendering", false),
                         content: RenderableText = RenderableText("Content rendering", true),
                         excerpt: RenderableText = RenderableText("Excerpt rendering", true),
-                        author: String = "Author"): Article {
-            return Article(id, date, modified, slug, link, title, content, excerpt, author)
+                        author: String = "Author",
+                        media: String = "media-id"): Article {
+            return Article(id, date, modified, slug, link, title, content, excerpt, author, media)
         }
     }
 
