@@ -47,9 +47,47 @@ class ArticleListViewModelTest {
         verify(mockRepository, times(1)).list(anyInt(), anyInt())
         verify(mockMediaRepository, times(1)).get(eq("media-id"))
 
-        verify(mockView, times(1)).showArticleListLoaded(eq(0))
+        verify(mockView, times(1)).showArticleListLoaded(eq(1))
         verify(mockView, times(1)).showLoadingIndicator(eq(true))
         verify(mockView, times(1)).showLoadingIndicator(eq(false))
+        verify(mockView, never()).showEmptyState()
+        verify(mockView, never()).showError()
+    }
+
+    @Test
+    fun testArticleListViewModel_refresh() {
+        mockRepository = mock {
+            on { list(anyInt(), anyInt()) } doReturn Maybe.just(articleList)
+            on { refresh(anyInt()) } doReturn Single.just(articleList)
+        }
+        mockMediaRepository = mock {
+            on { get(ArgumentMatchers.anyString()) } doReturn Maybe.just(testMediaItem)
+        }
+        val mockView: ArticleListView = mock {}
+
+        val testScheduler = TestScheduler()
+        val viewModel = ArticleListViewModel(mockRepository, mockMediaRepository, testScheduler, testScheduler)
+        viewModel.bindView(mockView)
+
+        testScheduler.triggerActions()
+
+        verify(mockRepository, times(1)).list(anyInt(), anyInt())
+        verify(mockMediaRepository, times(1)).get(eq("media-id"))
+
+        verify(mockView, times(1)).showArticleListLoaded(eq(1))
+        verify(mockView, times(1)).showLoadingIndicator(eq(true))
+        verify(mockView, times(1)).showLoadingIndicator(eq(false))
+        verify(mockView, never()).showEmptyState()
+        verify(mockView, never()).showError()
+
+        viewModel.refresh()
+        testScheduler.triggerActions()
+
+        verify(mockRepository, times(2)).refresh(anyInt())
+
+        verify(mockView, times(2)).showArticleListLoaded(eq(1))
+        verify(mockView, times(2)).showLoadingIndicator(eq(true))
+        verify(mockView, times(2)).showLoadingIndicator(eq(false))
         verify(mockView, never()).showEmptyState()
         verify(mockView, never()).showError()
     }
