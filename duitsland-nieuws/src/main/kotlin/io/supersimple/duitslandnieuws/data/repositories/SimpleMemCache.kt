@@ -19,7 +19,7 @@ abstract class SimpleMemCache<K, V>(internal val cache: MutableMap<K, V>) {
         return Maybe.create<List<V>> { observer ->
             if (cache.isNotEmpty()) {
                 val list = cache.values.toList()
-                if ((page + 1) * pageSize < list.size) {
+                if ((page + 1) * pageSize <= list.size) {
                     observer.onSuccess(list.subList(page * pageSize, (page + 1) * pageSize))
                 }
             }
