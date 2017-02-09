@@ -12,7 +12,19 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/colorAccent</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@android:transition/slide_right</item>
+    </style>
+
+    <style name="ArticleListTheme" parent="AppTheme.NoActionBar" />
+
+    <style name="ArticleDetailTheme" parent="AppTheme.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <!-- Text -->
@@ -20,10 +32,8 @@
         <item name="android:letterSpacing">0.02</item>
     </style>
 
-    <style name="AppTheme.Text.Card">
-
-    </style>
-
+    <!--Card-->
+    <style name="AppTheme.Text.Card" />
     <style name="AppTheme.Text.Card.Title">
         <item name="android:textSize">15sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -45,4 +55,26 @@
         <item name="android:textColor">@drawable/selector_card_text_color</item>
     </style>
 
+    <!--Detail-->
+    <style name="AppTheme.Text.Detail" />
+    <style name="AppTheme.Text.Detail.Title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:textColor">@drawable/selector_card_title_color</item>
+    </style>
+
+    <style name="AppTheme.Text.Detail.Date">
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:lineSpacingMultiplier">1.3</item>
+        <item name="android:textColor">@color/article_card_date</item>
+    </style>
+
+    <style name="AppTheme.Text.Detail.Text">
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:textColor">@drawable/selector_card_text_color</item>
+    </style>
 </resources>

@@ -1,21 +1,17 @@
 package io.supersimple.duitslandnieuws.presentation.article
 
 import android.databinding.ObservableArrayList
-import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import io.supersimple.duitslandnieuws.data.models.Article
 import io.supersimple.duitslandnieuws.data.models.Media
-import io.supersimple.duitslandnieuws.data.repositories.article.ArticleRepository
-import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepository
+import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 import io.supersimple.duitslandnieuws.presentation.article.adapter.ArticleItemPresentation
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ArticleListViewModel(private val articleRepository: ArticleRepository,
-                           private val mediaRepository: MediaRepository,
+class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
                            private val ioScheduler: Scheduler,
                            private val mainScheduler: Scheduler) : ObservableArrayList<ArticleItemPresentation>() {
 
@@ -37,7 +33,7 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
 
     private val stateSubject = PublishSubject.create<ArticleListLoadingState>()
-    private var page = -1
+    var page = -1
     private var pendingPage = -1
 
     fun bindView(view: ArticleListView) {
@@ -74,25 +70,23 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
         }
         pendingPage = page
         subscriptions!!.add(
-                articleRepository.list(page, PAGE_SIZE)
-                        .switchIfEmpty(articleRepository.refresh(PAGE_SIZE).toMaybe())
-                        .toObservable()
-                        .flatMapIterable({ it })
-                        .flatMapMaybe({ mergeWithMedia(it) })
-                        .flatMapMaybe({ convertToPresentation(it) })
-                        .toList()
+                articleInteractor.list(page, PAGE_SIZE)
+                        .switchIfEmpty(articleInteractor.refresh(PAGE_SIZE))
+                        .map({ convertToPresentation(it) })
                         .doOnSubscribe({ stateSubject.onNext(ArticleListLoadingState.LOADING) })
-                        .doOnSuccess({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
+                        .doOnComplete({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
                         .subscribeOn(ioScheduler)
                         .observeOn(mainScheduler)
                         .subscribe(
-                                { list ->
-                                    addAll(list)
-                                    articleListView?.showArticleListLoaded(++page)
+                                { item ->
+                                    add(item)
                                 },
                                 { error ->
-                                    articleListView?.showError()
+                                    articleListView?.showError(error)
                                     error.printStackTrace()
+                                },
+                                {
+                                    articleListView?.showArticleListLoaded(++page)
                                 })
         )
     }
@@ -100,40 +94,30 @@ class ArticleListViewModel(private val articleRepository: ArticleRepository,
     fun refresh() {
         page = 0
         pendingPage = page
+
+        clear()
+
         subscriptions!!.add(
-                articleRepository.refresh(PAGE_SIZE)
-                        .toObservable()
-                        .flatMapIterable({ it })
-                        .flatMapMaybe({ mergeWithMedia(it) })
-                        .flatMapMaybe({ convertToPresentation(it) })
-                        .toList()
+                articleInteractor.refresh(PAGE_SIZE)
+                        .map({ convertToPresentation(it) })
                         .doOnSubscribe({ stateSubject.onNext(ArticleListLoadingState.LOADING) })
-                        .doOnSuccess({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
+                        .doOnComplete({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
                         .subscribeOn(ioScheduler)
                         .observeOn(mainScheduler)
                         .subscribe(
                                 { list ->
-                                    clear()
-                                    addAll(list)
-                                    articleListView?.showArticleListLoaded(++page)
+                                    add(list)
                                 },
                                 { error ->
-                                    articleListView?.showError()
+                                    articleListView?.showError(error)
                                     error.printStackTrace()
+                                },
+                                {
+                                    articleListView?.showArticleListLoaded(++page)
                                 })
         )
     }
 
-    private fun mergeWithMedia(article: Article): Maybe<Pair<Article, Media>> {
-        return Maybe.just(article)
-                .zipWith(mediaRepository.get(article.featured_media)
-                        .onErrorComplete()
-                        .defaultIfEmpty(Media.empty)
-                        , BiFunction { t1, t2 -> Pair(t1, t2) })
-    }
-
-    private fun convertToPresentation(pair: Pair<Article, Media>): Maybe<ArticleItemPresentation> {
-        return Maybe.just(pair)
-                .map({ ArticleItemPresentation.from(it.first, it.second, dateFormatter) })
-    }
+    private fun convertToPresentation(pair: Pair<Article, Media>): ArticleItemPresentation =
+            ArticleItemPresentation.from(pair.first, pair.second, dateFormatter)
 }

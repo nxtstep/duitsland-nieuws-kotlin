@@ -14,7 +14,7 @@ data class RenderableText(
     companion object {
         val empty = RenderableText("", false)
 
-        fun fromHtml(html: String): Spanned {
+        fun fromHtml(html: String): CharSequence {
             try {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
@@ -22,7 +22,7 @@ data class RenderableText(
                     return Html.fromHtml(html)
                 }
             } catch (t: Throwable) {
-                return SpannableString("")
+                return html
             }
         }
 
