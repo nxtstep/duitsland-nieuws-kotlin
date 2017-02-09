@@ -1,6 +1,7 @@
 package io.supersimple.duitslandnieuws.presentation.article
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import io.supersimple.duitslandnieuws.R
 import io.supersimple.duitslandnieuws.di.fragment.FragmentComponentBuilderProvider
 import io.supersimple.duitslandnieuws.presentation.ComponentFragment
 import io.supersimple.duitslandnieuws.presentation.article.adapter.ArticleListAdapter
+import io.supersimple.duitslandnieuws.presentation.detail.ArticleDetailActivity
 import kotlinx.android.synthetic.main.fragment_article_list.*
 import javax.inject.Inject
 
@@ -44,6 +46,13 @@ class ArticleListFragment : ComponentFragment(), ArticleListView {
         rv_article_list.adapter = articleListAdapter
 
         swipe_refresh_layout.setOnRefreshListener { articleListViewModel.refresh() }
+
+        articleListAdapter.onArticleClickListener = object: ArticleListAdapter.OnArticleClickListener {
+            override fun onArticleClicked(articleId: String, position: Int) {
+                val intent = ArticleDetailActivity.createIntent(context, articleId)
+                startActivity(intent)
+            }
+        }
     }
 
     override fun onStart() {
@@ -53,6 +62,7 @@ class ArticleListFragment : ComponentFragment(), ArticleListView {
 
     override fun onStop() {
         articleListViewModel.unbind()
+        swipe_refresh_layout.isRefreshing = false
         super.onStop()
     }
 
@@ -61,15 +71,16 @@ class ArticleListFragment : ComponentFragment(), ArticleListView {
     }
 
     override fun showEmptyState() {
-        Toast.makeText(context, "Empty", Toast.LENGTH_SHORT).show()
+        Snackbar.make(rv_article_list, R.string.list_empty, Toast.LENGTH_LONG).show()
     }
 
-    override fun showError() {
+    override fun showError(t: Throwable) {
         swipe_refresh_layout.isRefreshing = false
-        Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+        Snackbar.make(rv_article_list, t.message as CharSequence, Snackbar.LENGTH_LONG).show()
     }
 
     override fun showArticleListLoaded(page: Int) {
-        Toast.makeText(context, "Loaded page: $page", Toast.LENGTH_SHORT).show()
+        Snackbar.make(rv_article_list, resources.getString(R.string.list_loaded_page, page),
+                Snackbar.LENGTH_SHORT).show()
     }
 }

@@ -1,16 +1,13 @@
 package io.supersimple.duitslandnieuws.presentation.article
 
 import com.nhaarman.mockito_kotlin.*
-import io.reactivex.Maybe
-import io.reactivex.Single
+import io.reactivex.Observable
 import io.reactivex.schedulers.TestScheduler
 import io.supersimple.duitslandnieuws.data.models.Article
 import io.supersimple.duitslandnieuws.data.models.RenderableText
-import io.supersimple.duitslandnieuws.data.repositories.article.ArticleRepository
-import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepository
 import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepositoryTest.Companion.testMediaItem
+import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 import org.junit.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.anyInt
 import java.util.*
 
@@ -20,75 +17,63 @@ class ArticleListViewModelTest {
         val article = Article("1", Date(), Date(), "MySlug", "http://www.duitslandnieuws.de",
                 RenderableText("title", true), RenderableText("Content", false),
                 RenderableText("Excerpt", false), "Author", "media-id")
-
-        val articleList: List<Article> = Arrays.asList(article)
     }
 
-    lateinit var mockRepository: ArticleRepository
-    lateinit var mockMediaRepository: MediaRepository
+    lateinit var mockInteractor: ArticleInteractor
 
     @Test
     fun testArticleListViewModel_list() {
-        mockRepository = mock {
-            on { list(anyInt(), anyInt()) } doReturn Maybe.just(articleList)
-            on { refresh(anyInt()) } doReturn Single.error(IllegalStateException("Refresh should not be called in test"))
-        }
-        mockMediaRepository = mock {
-            on { get(ArgumentMatchers.anyString()) } doReturn Maybe.just(testMediaItem)
+        mockInteractor = mock {
+            on { list(anyInt(), anyInt()) } doReturn Observable.just(Pair(article, testMediaItem))
+            on { refresh(anyInt()) } doReturn Observable.error(IllegalStateException("Refresh should not be called in test"))
         }
         val mockView: ArticleListView = mock {}
 
         val testScheduler = TestScheduler()
-        val viewModel = ArticleListViewModel(mockRepository, mockMediaRepository, testScheduler, testScheduler)
+        val viewModel = ArticleListViewModel(mockInteractor, testScheduler, testScheduler)
         viewModel.bindView(mockView)
 
         testScheduler.triggerActions()
 
-        verify(mockRepository, times(1)).list(anyInt(), anyInt())
-        verify(mockMediaRepository, times(1)).get(eq("media-id"))
+        verify(mockInteractor, times(1)).list(eq(0), anyInt())
 
         verify(mockView, times(1)).showArticleListLoaded(eq(1))
         verify(mockView, times(1)).showLoadingIndicator(eq(true))
         verify(mockView, times(1)).showLoadingIndicator(eq(false))
         verify(mockView, never()).showEmptyState()
-        verify(mockView, never()).showError()
+        verify(mockView, never()).showError(any())
     }
 
     @Test
     fun testArticleListViewModel_refresh() {
-        mockRepository = mock {
-            on { list(anyInt(), anyInt()) } doReturn Maybe.just(articleList)
-            on { refresh(anyInt()) } doReturn Single.just(articleList)
-        }
-        mockMediaRepository = mock {
-            on { get(ArgumentMatchers.anyString()) } doReturn Maybe.just(testMediaItem)
+        mockInteractor = mock {
+            on { list(anyInt(), anyInt()) } doReturn Observable.error(IllegalStateException("Refresh should not be called in test"))
+            on { refresh(anyInt()) } doReturn Observable.just(Pair(article, testMediaItem))
         }
         val mockView: ArticleListView = mock {}
 
         val testScheduler = TestScheduler()
-        val viewModel = ArticleListViewModel(mockRepository, mockMediaRepository, testScheduler, testScheduler)
+        val viewModel = ArticleListViewModel(mockInteractor, testScheduler, testScheduler)
+        viewModel.page = 0
         viewModel.bindView(mockView)
 
         testScheduler.triggerActions()
 
-        verify(mockRepository, times(1)).list(anyInt(), anyInt())
-        verify(mockMediaRepository, times(1)).get(eq("media-id"))
+        verify(mockView, never()).showArticleListLoaded(anyInt())
+        verify(mockView, never()).showLoadingIndicator(eq(true))
+        verify(mockView, never()).showLoadingIndicator(eq(false))
+        verify(mockView, never()).showEmptyState()
+        verify(mockView, never()).showError(any())
+
+        viewModel.refresh()
+        testScheduler.triggerActions()
+
+        verify(mockInteractor, times(1)).refresh(anyInt())
 
         verify(mockView, times(1)).showArticleListLoaded(eq(1))
         verify(mockView, times(1)).showLoadingIndicator(eq(true))
         verify(mockView, times(1)).showLoadingIndicator(eq(false))
         verify(mockView, never()).showEmptyState()
-        verify(mockView, never()).showError()
-
-        viewModel.refresh()
-        testScheduler.triggerActions()
-
-        verify(mockRepository, times(2)).refresh(anyInt())
-
-        verify(mockView, times(2)).showArticleListLoaded(eq(1))
-        verify(mockView, times(2)).showLoadingIndicator(eq(true))
-        verify(mockView, times(2)).showLoadingIndicator(eq(false))
-        verify(mockView, never()).showEmptyState()
-        verify(mockView, never()).showError()
+        verify(mockView, never()).showError(any())
     }
 }

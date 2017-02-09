@@ -5,7 +5,7 @@ interface ArticleListView {
 
     fun showEmptyState(): Unit
 
-    fun showError(): Unit
+    fun showError(t: Throwable): Unit
 
     fun showArticleListLoaded(page: Int): Unit
 }

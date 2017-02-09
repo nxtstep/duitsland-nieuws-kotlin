@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Duitsland Nieuws</string>
+
+    <string name="list_empty">No item available</string>
+    <string name="list_loaded_page">Page %1$d loaded</string>
 </resources>
