@@ -5,7 +5,6 @@ def versionPatch = 0
 def versionBuild = 'git rev-list HEAD --count'.execute([], project.rootDir).text.trim().toInteger()
 
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
@@ -55,11 +54,6 @@ android {
 
     dataBinding {
         enabled true
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     sourceSets {
