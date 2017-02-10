@@ -26,11 +26,10 @@ class ArticleInteractor @Inject constructor(val articleRepository: ArticleReposi
                     .flatMapIterable { it }
                     .flatMap({ mergeWithMedia(it).toObservable() })
 
-    private fun mergeWithMedia(article: Article): Maybe<Pair<Article, Media>> {
-        return Maybe.just(article)
-                .zipWith(mediaRepository.get(article.featured_media)
-                        .onErrorComplete()
-                        .defaultIfEmpty(Media.empty)
-                        , BiFunction { t1, t2 -> Pair(t1, t2) })
-    }
+    private fun mergeWithMedia(article: Article): Maybe<Pair<Article, Media>> =
+            Maybe.just(article)
+                    .zipWith(mediaRepository.get(article.featured_media)
+                            .onErrorComplete()
+                            .defaultIfEmpty(Media.empty)
+                            , BiFunction { t1, t2 -> Pair(t1, t2) })
 }

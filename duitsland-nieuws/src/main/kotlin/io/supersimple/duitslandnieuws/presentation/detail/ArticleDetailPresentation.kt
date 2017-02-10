@@ -14,13 +14,12 @@ data class ArticleDetailPresentation(val articleId: String,
     companion object {
         val empty = ArticleDetailPresentation("", "", "", "")
 
-        fun from(article: Article, media: Media, dateFormatter: DateFormat): ArticleDetailPresentation {
-            return ArticleDetailPresentation(article.id,
-                    dateFormatter.format(article.date),
-                    article.title.text(),
-                    article.content.text(),
-                    media.caption.text(),
-                    media.media_details.sizes[IMAGE_FULL]?.source_url)
-        }
+        fun from(article: Article, media: Media, dateFormatter: DateFormat): ArticleDetailPresentation =
+                ArticleDetailPresentation(article.id,
+                        dateFormatter.format(article.date),
+                        article.title.text(),
+                        article.content.text(),
+                        media.caption.text(),
+                        media.media_details.sizes[IMAGE_FULL]?.source_url)
     }
 }

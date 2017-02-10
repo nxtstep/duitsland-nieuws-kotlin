@@ -17,66 +17,60 @@ class ArticleDisk(private val store: KotlinReactiveEntityStore<Persistable>) {
             .flatMap { store.upsert(it) }
             .map { convertFromDb(it) }
 
-    fun list(page: Int, pageSize: Int): Maybe<List<Article>> {
-        return store.select(ArticleDAO::class)
-                .orderBy(ArticleDAOEntity.DATE.desc())
-                .limit(pageSize)
-                .offset(page * pageSize)
-                .get()
-                .observable()
-                .map { convertFromDb(it) }
-                .toList()
-                .filter { it.isNotEmpty() }
-    }
+    fun list(page: Int, pageSize: Int): Maybe<List<Article>> =
+            store.select(ArticleDAO::class)
+                    .orderBy(ArticleDAOEntity.DATE.desc())
+                    .limit(pageSize)
+                    .offset(page * pageSize)
+                    .get()
+                    .observable()
+                    .map { convertFromDb(it) }
+                    .toList()
+                    .filter { it.isNotEmpty() }
 
-    fun save(articles: List<Article>): Single<List<Article>> {
-        return Observable.fromIterable(articles)
-                .flatMapSingle { save(it) }
-                .toList()
-    }
+    fun save(articles: List<Article>): Single<List<Article>> =
+            Observable.fromIterable(articles)
+                    .flatMapSingle { save(it) }
+                    .toList()
 
     fun delete(article: Article): Single<Article> = delete(article.id)
 
-    fun delete(id: String): Single<Article> {
-        return getDAO(id)
-                .toSingle()
-                .flatMap { deleteArticleDAO(it) }
-                .map { convertFromDb(it) }
-    }
+    fun delete(id: String): Single<Article> =
+            getDAO(id)
+                    .toSingle()
+                    .flatMap { deleteArticleDAO(it) }
+                    .map { convertFromDb(it) }
 
-    fun deleteAll(): Single<Int> {
-        return store.delete(ArticleDAO::class)
-                .get()
-                .single()
-    }
+    fun deleteAll(): Single<Int> =
+            store.delete(ArticleDAO::class)
+                    .get()
+                    .single()
 
-    private fun deleteArticleDAO(article: ArticleDAO): Single<ArticleDAO> {
-        return store.delete(article)
-                .toSingle<ArticleDAO> { article }
-                .onErrorResumeNext { t: Throwable -> Single.just(article) } // TODO: remove this line when Requery (1.1.3) merged the Void -> Void? PR
-    }
+    private fun deleteArticleDAO(article: ArticleDAO): Single<ArticleDAO> =
+            store.delete(article)
+                    .toSingle<ArticleDAO> { article }
+                    .onErrorResumeNext { t: Throwable -> Single.just(article) }
+    // TODO: remove this line when Requery (1.1.3) merged the Void -> Void? PR
 
-    private fun getDAO(id: String): Maybe<ArticleDAO> {
-        return store.select(ArticleDAO::class)
-                .where(ArticleDAO::id eq id)
-                .get()
-                .maybe()
-    }
+    private fun getDAO(id: String): Maybe<ArticleDAO> =
+            store.select(ArticleDAO::class)
+                    .where(ArticleDAO::id eq id)
+                    .get()
+                    .maybe()
 
     companion object {
 
-        fun convertFromDb(dbArticle: ArticleDAO): Article {
-            return Article(dbArticle.id,
-                    dbArticle.date,
-                    dbArticle.modified,
-                    dbArticle.slug,
-                    dbArticle.link,
-                    dbArticle.title,
-                    dbArticle.content,
-                    dbArticle.excerpt,
-                    dbArticle.author,
-                    dbArticle.featured_media)
-        }
+        fun convertFromDb(dbArticle: ArticleDAO): Article =
+                Article(dbArticle.id,
+                        dbArticle.date,
+                        dbArticle.modified,
+                        dbArticle.slug,
+                        dbArticle.link,
+                        dbArticle.title,
+                        dbArticle.content,
+                        dbArticle.excerpt,
+                        dbArticle.author,
+                        dbArticle.featured_media)
 
         fun convertToDb(article: Article): ArticleDAO {
             val o = ArticleDAOEntity()

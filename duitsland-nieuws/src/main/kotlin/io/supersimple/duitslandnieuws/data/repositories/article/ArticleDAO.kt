@@ -2,7 +2,7 @@ package io.supersimple.duitslandnieuws.data.repositories.article
 
 import io.requery.*
 import io.supersimple.duitslandnieuws.data.models.RenderableText
-import java.util.Date
+import java.util.*
 
 @Entity
 interface ArticleDAO : Persistable {
@@ -43,17 +43,12 @@ interface ArticleDAO : Persistable {
             throw IllegalStateException("Did not save RenderedText properly")
         }
 
-        override fun getMappedType(): Class<RenderableText> {
-            return RenderableText::class.java
-        }
+        override fun getMappedType(): Class<RenderableText> = RenderableText::class.java
 
-        override fun getPersistedSize(): Int? {
-            return null
-        }
+        override fun getPersistedSize(): Int? = null
 
-        override fun convertToPersisted(value: RenderableText?): String {
-            return value?.protected.toString() + SEPARATOR_SYMBOL + value?.rendered
-        }
+        override fun convertToPersisted(value: RenderableText?): String =
+                value?.protected.toString() + SEPARATOR_SYMBOL + value?.rendered
     }
 }
 
