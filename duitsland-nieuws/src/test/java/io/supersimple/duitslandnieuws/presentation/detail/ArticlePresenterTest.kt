@@ -8,6 +8,7 @@ import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ArticlePresenterTest {
@@ -15,14 +16,20 @@ class ArticlePresenterTest {
     lateinit var mockIteractor: ArticleInteractor
 
     companion object {
+        val dateFormatter: SimpleDateFormat by lazy {
+            SimpleDateFormat("H:mm - d MMMM yyyy")
+        }
+
+        val testDate = Date(1486644394000L)
+
         val testPresentation = ArticleDetailPresentation("test-id",
-                "13:46 - 9 February 2017",
+                dateFormatter.format(testDate),
                 "test-title",
                 "text-string",
                 "Caption",
                 "http://image.url.com/image/1.jpg")
 
-        val testArticle = Article("test-id", Date(1486644394000L), Date(), "no-slug", "http://article.link.com",
+        val testArticle = Article("test-id", testDate, Date(), "no-slug", "http://article.link.com",
                 RenderableText("test-title"),
                 RenderableText("text-string"),
                 RenderableText("Excerpt"),
