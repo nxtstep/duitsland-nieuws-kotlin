@@ -11,12 +11,11 @@ data class ArticleItemPresentation(val id: String,
                                    val excerpt: CharSequence,
                                    val imageUrl: String? = null) {
     companion object {
-        fun from(article: Article, media: Media, dateFormatter: DateFormat): ArticleItemPresentation {
-            return ArticleItemPresentation(article.id,
-                    dateFormatter.format(article.date),
-                    article.title.text(),
-                    article.excerpt.text(),
-                    media.media_details.sizes[IMAGE_THUMBNAIL]?.source_url)
-        }
+        fun from(article: Article, media: Media, dateFormatter: DateFormat): ArticleItemPresentation =
+                ArticleItemPresentation(article.id,
+                        dateFormatter.format(article.date),
+                        article.title.text(),
+                        article.excerpt.text(),
+                        media.media_details.sizes[IMAGE_THUMBNAIL]?.source_url)
     }
 }

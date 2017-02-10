@@ -9,29 +9,25 @@ class MediaRepository(private val cache: MediaCache,
                       private val disk: MediaDisk,
                       private val cloud: MediaCloud) {
 
-    fun get(id: String): Maybe<Media> {
-        return cache.get(id)
-                .switchIfEmpty(disk.get(id)
-                        .flatMap({ cache.save(it).toMaybe() })
-                        .switchIfEmpty(cloud.get(id)
-                                .flatMap({ disk.save(it) })
-                                .flatMapMaybe({ cache.save(it).toMaybe() })
-                        )
-                )
-    }
+    fun get(id: String): Maybe<Media> =
+            cache.get(id)
+                    .switchIfEmpty(disk.get(id)
+                            .flatMap({ cache.save(it).toMaybe() })
+                            .switchIfEmpty(cloud.get(id)
+                                    .flatMap({ disk.save(it) })
+                                    .flatMapMaybe({ cache.save(it).toMaybe() })
+                            )
+                    )
 
-    fun save(media: Media): Single<Media> {
-        return disk.save(media)
-                .flatMap({ cache.save(it) })
-    }
+    fun save(media: Media): Single<Media> =
+            disk.save(media)
+                    .flatMap({ cache.save(it) })
 
-    fun delete(media: Media): Single<Media> {
-        return disk.delete(media)
-                .flatMap({ cache.delete(it).toSingle() })
-    }
+    fun delete(media: Media): Single<Media> =
+            disk.delete(media)
+                    .flatMap({ cache.delete(it).toSingle() })
 
-    fun clearCaches(): Completable {
-        return cache.deleteAll()
-                .flatMapCompletable({ disk.deleteAll() })
-    }
+    fun clearCaches(): Completable =
+            cache.deleteAll()
+                    .flatMapCompletable({ disk.deleteAll() })
 }
