@@ -2,6 +2,7 @@ package io.supersimple.duitslandnieuws.presentation.article
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.Toast
 import io.supersimple.duitslandnieuws.R
 import io.supersimple.duitslandnieuws.di.fragment.FragmentComponentBuilderProvider
 import io.supersimple.duitslandnieuws.presentation.ComponentFragment
+import io.supersimple.duitslandnieuws.presentation.article.adapter.ArticleItemLayout
 import io.supersimple.duitslandnieuws.presentation.article.adapter.ArticleListAdapter
 import io.supersimple.duitslandnieuws.presentation.detail.ArticleDetailActivity
 import kotlinx.android.synthetic.main.fragment_article_list.*
@@ -47,10 +49,9 @@ class ArticleListFragment : ComponentFragment(), ArticleListView {
 
         swipe_refresh_layout.setOnRefreshListener { articleListViewModel.refresh() }
 
-        articleListAdapter.onArticleClickListener = object: ArticleListAdapter.OnArticleClickListener {
-            override fun onArticleClicked(articleId: String, position: Int) {
-                val intent = ArticleDetailActivity.createIntent(context, articleId)
-                startActivity(intent)
+        articleListAdapter.onArticleClickListener = object : ArticleListAdapter.OnArticleClickListener {
+            override fun onArticleClicked(articleId: String, position: Int, view: ArticleItemLayout) {
+                ArticleDetailActivity.navigate(activity as AppCompatActivity, view, articleId)
             }
         }
     }

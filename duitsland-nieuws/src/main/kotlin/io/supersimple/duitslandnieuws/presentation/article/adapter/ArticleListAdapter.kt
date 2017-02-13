@@ -16,7 +16,7 @@ class ArticleListAdapter @Inject constructor(articleListViewModel: ArticleListVi
     private val articleListViewModel = articleListViewModel
 
     interface OnArticleClickListener {
-        fun onArticleClicked(articleId: String, position: Int): Unit
+        fun onArticleClicked(articleId: String, position: Int, view: ArticleItemLayout): Unit
     }
 
     var onArticleClickListener: OnArticleClickListener? = null
