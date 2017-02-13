@@ -41,7 +41,7 @@ class ArticleItemLayout : LinearLayout {
 
         setOnClickListener {
             article?.let {
-                listener?.onArticleClicked(it.id, position)
+                listener?.onArticleClicked(it.id, position, this)
             }
         }
     }

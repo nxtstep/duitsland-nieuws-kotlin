@@ -14,11 +14,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/colorAccent</item>
 
-        <!-- enable window content transitions -->
-        <item name="android:windowActivityTransitions">true</item>
-
-        <!-- specify enter and exit transitions -->
-        <item name="android:windowEnterTransition">@android:transition/slide_right</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
     </style>
 
     <style name="ArticleListTheme" parent="AppTheme.NoActionBar" />
