@@ -9,7 +9,7 @@ import io.requery.reactivex.KotlinReactiveEntityStore
 import io.requery.sql.KotlinEntityDataStore
 import io.requery.sql.TableCreationMode
 import io.supersimple.duitslandnieuws.data.repositories.article.Models
-import io.supersimple.duitslandnieuws.di.app.qualifier.ApplicationContext
+import io.supersimple.duitslandnieuws.di.qualifier.ApplicationContext
 import javax.inject.Singleton
 
 @Module class DatabaseModule {

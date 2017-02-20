@@ -1,4 +1,4 @@
-package io.supersimple.duitslandnieuws.di.app.qualifier
+package io.supersimple.duitslandnieuws.di.qualifier
 
 import javax.inject.Qualifier
 

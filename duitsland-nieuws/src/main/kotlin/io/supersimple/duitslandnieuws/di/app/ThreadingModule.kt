@@ -5,8 +5,8 @@ import dagger.Provides
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import io.supersimple.duitslandnieuws.di.app.qualifier.IOScheduler
-import io.supersimple.duitslandnieuws.di.app.qualifier.MainScheduler
+import io.supersimple.duitslandnieuws.di.qualifier.IOScheduler
+import io.supersimple.duitslandnieuws.di.qualifier.MainScheduler
 import javax.inject.Singleton
 
 @Module

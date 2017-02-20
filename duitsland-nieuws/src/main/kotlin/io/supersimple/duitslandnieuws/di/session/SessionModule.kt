@@ -15,7 +15,7 @@ import io.supersimple.duitslandnieuws.data.repositories.media.MediaCache
 import io.supersimple.duitslandnieuws.data.repositories.media.MediaCloud
 import io.supersimple.duitslandnieuws.data.repositories.media.MediaDisk
 import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepository
-import io.supersimple.duitslandnieuws.di.app.qualifier.ApplicationContext
+import io.supersimple.duitslandnieuws.di.qualifier.ApplicationContext
 import javax.inject.Singleton
 
 @Module class SessionModule {

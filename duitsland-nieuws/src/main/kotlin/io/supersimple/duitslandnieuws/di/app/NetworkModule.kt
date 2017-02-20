@@ -9,7 +9,7 @@ import dagger.Provides
 import io.supersimple.duitslandnieuws.BuildConfig
 import io.supersimple.duitslandnieuws.data.api.ArticleEndpoint
 import io.supersimple.duitslandnieuws.data.api.MediaEndpoint
-import io.supersimple.duitslandnieuws.di.app.qualifier.BaseUrl
+import io.supersimple.duitslandnieuws.di.qualifier.BaseUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

@@ -4,8 +4,8 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.supersimple.duitslandnieuws.application.getMetaData
-import io.supersimple.duitslandnieuws.di.app.qualifier.ApplicationContext
-import io.supersimple.duitslandnieuws.di.app.qualifier.BaseUrl
+import io.supersimple.duitslandnieuws.di.qualifier.ApplicationContext
+import io.supersimple.duitslandnieuws.di.qualifier.BaseUrl
 import javax.inject.Singleton
 
 @Module class AppModule(val context: Context) {

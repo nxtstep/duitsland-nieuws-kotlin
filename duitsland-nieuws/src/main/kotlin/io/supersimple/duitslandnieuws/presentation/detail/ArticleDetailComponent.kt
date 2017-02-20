@@ -8,8 +8,8 @@ import io.supersimple.duitslandnieuws.di.activity.ActivityComponent
 import io.supersimple.duitslandnieuws.di.activity.ActivityComponentBuilder
 import io.supersimple.duitslandnieuws.di.activity.ActivityModule
 import io.supersimple.duitslandnieuws.di.activity.ActivityScope
-import io.supersimple.duitslandnieuws.di.app.qualifier.IOScheduler
-import io.supersimple.duitslandnieuws.di.app.qualifier.MainScheduler
+import io.supersimple.duitslandnieuws.di.qualifier.IOScheduler
+import io.supersimple.duitslandnieuws.di.qualifier.MainScheduler
 import io.supersimple.duitslandnieuws.di.fragment.FragmentBinder
 import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 
