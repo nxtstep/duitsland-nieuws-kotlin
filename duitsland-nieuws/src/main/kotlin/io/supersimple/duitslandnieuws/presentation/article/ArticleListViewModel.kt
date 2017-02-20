@@ -74,7 +74,7 @@ class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
                         .switchIfEmpty(articleInteractor.refresh(PAGE_SIZE))
                         .map({ convertToPresentation(it) })
                         .doOnSubscribe({ stateSubject.onNext(ArticleListLoadingState.LOADING) })
-                        .doOnComplete({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
+                        .doFinally({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
                         .subscribeOn(ioScheduler)
                         .observeOn(mainScheduler)
                         .subscribe(
@@ -101,7 +101,7 @@ class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
                 articleInteractor.refresh(PAGE_SIZE)
                         .map({ convertToPresentation(it) })
                         .doOnSubscribe({ stateSubject.onNext(ArticleListLoadingState.LOADING) })
-                        .doOnComplete({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
+                        .doFinally({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
                         .subscribeOn(ioScheduler)
                         .observeOn(mainScheduler)
                         .subscribe(
