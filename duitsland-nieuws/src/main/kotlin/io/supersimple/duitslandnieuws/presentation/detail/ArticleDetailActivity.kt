@@ -104,7 +104,7 @@ open class ArticleDetailActivity : ComponentActivity(), ArticleView {
         val EXTRA_ARTICLE_IMAGE_VIEW_TRANSITION = TAG + ".media_transition"
         val EXTRA_ARTICLE_TITLE_VIEW_TRANSITION = TAG + ".title_transition"
 
-        private fun createIntent(context: Context, articleId: String): Intent {
+        fun createIntent(context: Context, articleId: String): Intent {
             val intent = Intent(context, ArticleDetailActivity::class.java)
             intent.putExtra(EXTRA_ARTICLE_ID, articleId)
             return intent
