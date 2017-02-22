@@ -14,7 +14,7 @@ ext {
     daggerVersion = '2.9'
 
     // Requery
-    requeryVersion = '1.1.2'
+    requeryVersion = '1.2.0'
 
     // PaperParcel
     paperParcelVersion = '2.0.0'

@@ -49,8 +49,6 @@ class ArticleDisk(private val store: KotlinReactiveEntityStore<Persistable>) {
     private fun deleteArticleDAO(article: ArticleDAO): Single<ArticleDAO> =
             store.delete(article)
                     .toSingle<ArticleDAO> { article }
-                    .onErrorResumeNext { t: Throwable -> Single.just(article) }
-    // TODO: remove this line when Requery (1.1.3) merged the Void -> Void? PR
 
     private fun getDAO(id: String): Maybe<ArticleDAO> =
             store.select(ArticleDAO::class)
