@@ -1,40 +1,107 @@
-ext {
-    // App dependencies
-    androidSupportVersion = '25.1.1'
-    supersimpleVersion = '0.1.7'
+ext.sdk = [
+        minVersion : 23,
+        targetVersion : 25,
+        compileVersion : 25,
+        buildToolsVersion : "25.0.2"
+]
 
-    // Kotlin
-    kotlinVersion = '1.0.6'
+ext.versions = [
+        gradleBuildTools : '2.3.0',
+        dexcount : '0.6.2',
+        benManes : '0.14.0',
+        androidSupport : '25.1.1',
+        superSimple : '0.1.7',
+        rxJava : '2.0.5',
+        rxAndroid : '2.0.1',
+        kotlin : '1.0.6',
+        dagger : '2.9',
+        requery : '1.2.0',
+        gson : '2.8.0',
+        paperParcel : '2.0.0',
+        okHttp : '3.6.0',
+        retrofit2 : '2.1.0',
+        retrofit2RxJava2 : '1.0.0',
+        picasso : '2.5.2',
+        androidTestSupport : '0.4.1',
+        espresso : '2.2.2',
+        junit : '4.12',
+        robolectric : '3.2.2',
+        mockito : '2.2.8',
+        dexmaker : '2.2.0',
+        mockitoKotlin : '1.2.0'
+]
 
-    // RxJava
-    rxJavaVersion = '2.0.5'
-    rxAndroidVersion = '2.0.1'
+ext.gradlePlugins = [
+        android : "com.android.tools.build:gradle:$versions.gradleBuildTools",
+        versions : "com.github.ben-manes:gradle-versions-plugin:$versions.benManes",
+        dexcount : "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$versions.dexcount"
+]
 
-    // Dagger2
-    daggerVersion = '2.9'
+// App dependencies
+ext.libraries = [
+        androidSupport : "com.android.support:appcompat-v7:$versions.androidSupport",
+        androidDesign : "com.android.support:design:$versions.androidSupport",
+        kotlin : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
+        superSimple : "org.bitbucket.nxtapp.supersimpleandroid:simple-ui:$versions.superSimple",
+        rxJava : "io.reactivex.rxjava2:rxjava:$versions.rxJava",
+        rxAndroid : "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid",
+        dagger : "com.google.dagger:dagger:$versions.dagger",
+        requery : [
+                core : "io.requery:requery:$versions.requery",
+                kotlin : "io.requery:requery-kotlin:$versions.requery",
+                android : "io.requery:requery-android:$versions.requery"
+        ],
+        paperParcel : [
+                core : "nz.bradcampbell:paperparcel:$versions.paperParcel",
+                kotlin :  "nz.bradcampbell:paperparcel-kotlin:$versions.paperParcel"
+        ],
+        gson : "com.google.code.gson:gson:$versions.gson",
+        okHttp : [
+                core: "com.squareup.okhttp3:okhttp:$versions.okHttp",
+                loggingInterceptor : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp"
+        ],
+        retrofit2: [
+                core : "com.squareup.retrofit2:retrofit:$versions.retrofit2",
+                gsonconverter : "com.squareup.retrofit2:converter-gson:$versions.retrofit2",
+                rxjava2 : "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$versions.retrofit2RxJava2"
+        ],
+        picasso: "com.squareup.picasso:picasso:$versions.picasso"
 
-    // Requery
-    requeryVersion = '1.2.0'
+]
 
-    // PaperParcel
-    paperParcelVersion = '2.0.0'
+ext.kaptPlugin = [
+        dagger : [
+                compiler : "com.google.dagger:dagger-compiler:$versions.dagger"
+        ],
+        requery : [
+                processor : "io.requery:requery-processor:$versions.requery"
+        ],
+        paperParcel: [
+                compiler: "nz.bradcampbell:paperparcel-compiler:$versions.paperParcel"
+        ]
+]
 
-    // GSON
-    gsonVersion = '2.8.0'
+// UI Test
+ext.androidTest = [
+        supportAnnotations : "com.android.support:support-annotations:$versions.androidSupport",
+        testRunner : "com.android.support.test:runner:$versions.androidTestSupport",
+        testRules : "com.android.support.test:rules:$versions.androidTestSupport",
+        espresso : [
+                core : "com.android.support.test.espresso:espresso-core:$versions.espresso",
+                contrib : "com.android.support.test.espresso:espresso-contrib:$versions.espresso",
+                intents : "com.android.support.test.espresso:espresso-intents:$versions.espresso"
+        ],
+        mockito : "org.mockito:mockito-core:$versions.mockito",
+        dexmaker : "com.linkedin.dexmaker:dexmaker-mockito:$versions.dexmaker"
+]
 
-    // OkHttp + Retrofit2
-    okHttpVersion = '3.6.0'
-    retrofit2Version = '2.1.0'
-    retrofit2RxJava2Version = '1.0.0'
-
-    // Picasso
-    picassoVersion = '2.5.2'
-
-    // test
-    androidSupportTest = '0.4.1'
-    espressoTestVersion = '2.2.1'
-    junitVersion = '4.12'
-    robolectricVersion = '3.2.2'
-    mockitoVersion = '2.7.1'
-    mockitoKotlinVersion = '1.2.0'
-}
+// test
+ext.test = [
+        junit : "junit:junit:$versions.junit",
+        robolectric : "org.robolectric:robolectric:$versions.robolectric",
+        mockito : [
+                core : "org.mockito:mockito-core:$versions.mockito",
+                kotlin : "com.nhaarman:mockito-kotlin:$versions.mockitoKotlin"
+        ],
+        mockWebserver : "com.squareup.okhttp3:mockwebserver:$versions.okHttp"
+]

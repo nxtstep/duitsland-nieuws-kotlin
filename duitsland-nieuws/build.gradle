@@ -99,77 +99,79 @@ android {
     }
 
     configurations.all {
-        resolutionStrategy.force "com.android.support:appcompat-v7:$androidSupportVersion"
-        resolutionStrategy.force "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        resolutionStrategy.force libraries.androidSupport
+        resolutionStrategy.force libraries.androidDesign
+        resolutionStrategy.force libraries.kotlin
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile "com.android.support:appcompat-v7:$androidSupportVersion"
-    compile "com.android.support:design:$androidSupportVersion"
+    compile libraries.androidSupport
+    compile libraries.androidDesign
     //
     // Kotlin
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    compile libraries.kotlin
 
     // RxJava
-    compile "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
-    compile "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    compile libraries.rxJava
+    compile libraries.rxAndroid
 
     //Dagger 2
-    compile "com.google.dagger:dagger:$daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    compile libraries.dagger
+    kapt kaptPlugin.dagger.compiler
 
     // Requery persistency
-    compile "io.requery:requery:$requeryVersion"
-    compile "io.requery:requery-kotlin:$requeryVersion"
-    compile "io.requery:requery-android:$requeryVersion"
-    kapt "io.requery:requery-processor:$requeryVersion"
+    compile libraries.requery.core
+    compile libraries.requery.kotlin
+    compile libraries.requery.android
+    kapt kaptPlugin.requery.processor
 
     // PaperParcel
-    compile "nz.bradcampbell:paperparcel:$paperParcelVersion"
-    compile "nz.bradcampbell:paperparcel-kotlin:$paperParcelVersion"
-    kapt "nz.bradcampbell:paperparcel-compiler:$paperParcelVersion"
+    compile libraries.paperParcel.core
+    compile libraries.paperParcel.kotlin
+    kapt kaptPlugin.paperParcel.compiler
 
     // GSON
-    compile "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
+    compile libraries.gson
 
     // OkHttpClient
-    compile "com.squareup.okhttp3:okhttp:$okHttpVersion"
-    compile "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
-    compile "com.squareup.retrofit2:retrofit:$retrofit2Version"
-    compile "com.squareup.retrofit2:converter-gson:$retrofit2Version"
-    compile "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$retrofit2RxJava2Version"
+    compile libraries.okHttp.core
+    compile libraries.okHttp.loggingInterceptor
+
+    compile libraries.retrofit2.core
+    compile libraries.retrofit2.gsonconverter
+    compile libraries.retrofit2.rxjava2
 
     //
     // SuperSimple
-    compile "org.bitbucket.nxtapp.supersimpleandroid:simple-ui:$supersimpleVersion"
+    compile libraries.superSimple
 
     // Picasso image loading
-    compile "com.squareup.picasso:picasso:$picassoVersion"
+    compile libraries.picasso
 
     //
     // Test-only dependencies
     // Force usage of support annotations in the test app, since it is internally used by the runner module.
-    androidTestCompile "com.android.support:support-annotations:$androidSupportVersion"
-    androidTestCompile "com.android.support.test:runner:$androidSupportTest"
+    androidTestCompile androidTest.supportAnnotations
+    androidTestCompile androidTest.testRunner
     // Set this dependency to use JUnit 4 rules
-    androidTestCompile "com.android.support.test:rules:$androidSupportTest"
+    androidTestCompile androidTest.testRules
     // Espresso
-    androidTestCompile "com.android.support.test.espresso:espresso-core:$espressoTestVersion"
-    androidTestCompile("com.android.support.test.espresso:espresso-contrib:$espressoTestVersion") {
+    androidTestCompile androidTest.espresso.core
+    androidTestCompile(androidTest.espresso.contrib) {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude module: 'support-annotations'
         exclude module: 'recyclerview-v7'
     }
-    androidTestCompile "com.android.support.test.espresso:espresso-intents:$espressoTestVersion"
+    androidTestCompile androidTest.espresso.intents
 
-    testCompile "junit:junit:$junitVersion"
+    testCompile test.junit
     //
     // UnitTest with Robolectric
-    testCompile("org.robolectric:robolectric:$robolectricVersion") {
+    testCompile(test.robolectric) {
         exclude module: 'classworlds'
         exclude module: 'commons-logging'
         exclude module: 'httpclient'
@@ -188,13 +190,13 @@ dependencies {
     }
 
     // Mockito
-    testCompile "org.mockito:mockito-core:$mockitoVersion"
-    testCompile ("com.nhaarman:mockito-kotlin:$mockitoKotlinVersion") {
+    testCompile test.mockito.core
+    testCompile (test.mockito.kotlin) {
         exclude group: 'org.mockito', module: 'mockito-core'
     }
 
     // OkHttpClient mocking
-    testCompile "com.squareup.okhttp3:mockwebserver:$okHttpVersion"
+    testCompile test.mockWebserver
 }
 
 buildscript {
@@ -204,7 +206,7 @@ buildscript {
     dependencies {
         //
         // Kotlin
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
     }
 }
 
