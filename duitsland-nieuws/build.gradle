@@ -97,6 +97,11 @@ android {
         // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
         preDexLibraries = preDexEnabled && !travisBuild
     }
+
+    configurations.all {
+        resolutionStrategy.force "com.android.support:appcompat-v7:$androidSupportVersion"
+        resolutionStrategy.force "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    }
 }
 
 dependencies {
