@@ -5,8 +5,10 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import io.supersimple.duitslandnieuws.application.DuitslandNieuwsApplication
 import io.supersimple.duitslandnieuws.di.activity.ActivityComponentBuilderProvider
+import io.supersimple.duitslandnieuws.di.fragment.FragmentComponent
 import io.supersimple.duitslandnieuws.di.fragment.FragmentComponentBuilder
 import io.supersimple.duitslandnieuws.di.fragment.FragmentComponentBuilderProvider
+import io.supersimple.duitslandnieuws.di.fragment.FragmentModule
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -26,7 +28,7 @@ abstract class ComponentActivity : AppCompatActivity(), FragmentComponentBuilder
 
     protected abstract fun injectMembers(activityComponentBuilder: ActivityComponentBuilderProvider)
 
-    override fun get(fragmentClass: Class<out Fragment>): FragmentComponentBuilder<*, *> {
-        return fragmentComponentBuilderMap[fragmentClass]!!.get()
+    override fun <F: Fragment, M: FragmentModule<F>, C : FragmentComponent<F>>fragmentComponentBuilder(fragmentClass: Class<out F>): FragmentComponentBuilder<M, C>? {
+        return fragmentComponentBuilderMap[fragmentClass]?.get() as? FragmentComponentBuilder<M, C>
     }
 }

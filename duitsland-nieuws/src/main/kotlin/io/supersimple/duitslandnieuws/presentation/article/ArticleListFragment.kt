@@ -28,7 +28,7 @@ class ArticleListFragment : ComponentFragment(), ArticleListView {
     }
 
     override fun injectMembers(fragmentComponentBuilder: FragmentComponentBuilderProvider) {
-        (fragmentComponentBuilder[ArticleListFragment::class.java] as ArticleListFragmentComponent.Builder) //TODO find a way to do this without casting
+        fragmentComponentBuilder.fragmentComponentBuilder(ArticleListFragment::class.java)!!
                 .fragmentModule(ArticleListFragmentComponent.ArticleListModule(this))
                 .build()
                 .injectMembers(this)
