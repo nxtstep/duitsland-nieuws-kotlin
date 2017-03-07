@@ -57,6 +57,10 @@ class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
     fun unbind() {
         subscriptions?.dispose()
         articleListView = null
+        if (pendingPage == page) {
+            page--
+        }
+        pendingPage = -1
     }
 
     fun loadFirstPage() {
