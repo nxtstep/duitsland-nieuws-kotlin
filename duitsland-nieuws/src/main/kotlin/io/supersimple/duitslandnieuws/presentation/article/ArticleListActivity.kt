@@ -21,7 +21,7 @@ class ArticleListActivity : ComponentActivity() {
     }
 
     override fun injectMembers(activityComponentBuilder: ActivityComponentBuilderProvider) {
-        (activityComponentBuilder[ArticleListActivity::class.java] as ArticleListComponent.Builder) //TODO find a way to do this without casting
+        activityComponentBuilder.activityComponentBuilder(ArticleListActivity::class.java)!!
                 .activityModule(ArticleListComponent.ArticleListModule(this))
                 .build()
                 .injectMembers(this)

@@ -44,7 +44,7 @@ open class ArticleDetailActivity : ComponentActivity(), ArticleView {
     }
 
     override fun injectMembers(activityComponentBuilder: ActivityComponentBuilderProvider) {
-        (activityComponentBuilder[ArticleDetailActivity::class.java] as ArticleDetailComponent.Builder) //TODO find a way to do this without casting
+        activityComponentBuilder.activityComponentBuilder(ArticleDetailActivity::class.java)!!
                 .activityModule(ArticleDetailComponent.ArticleDetailModule(this))
                 .build()
                 .injectMembers(this)
