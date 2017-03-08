@@ -109,8 +109,8 @@ class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
                         .subscribeOn(ioScheduler)
                         .observeOn(mainScheduler)
                         .subscribe(
-                                { list ->
-                                    add(list)
+                                { item ->
+                                    add(item)
                                 },
                                 { error ->
                                     articleListView?.showError(error)
