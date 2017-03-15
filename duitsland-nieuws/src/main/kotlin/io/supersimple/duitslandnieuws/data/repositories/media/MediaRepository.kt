@@ -12,22 +12,22 @@ class MediaRepository(private val cache: MediaCache,
     fun get(id: String): Maybe<Media> =
             cache.get(id)
                     .switchIfEmpty(disk.get(id)
-                            .flatMap({ cache.save(it).toMaybe() })
+                            .flatMap { cache.save(it).toMaybe() }
                             .switchIfEmpty(cloud.get(id)
-                                    .flatMap({ disk.save(it) })
-                                    .flatMapMaybe({ cache.save(it).toMaybe() })
+                                    .flatMap { disk.save(it) }
+                                    .flatMapMaybe { cache.save(it).toMaybe() }
                             )
                     )
 
     fun save(media: Media): Single<Media> =
             disk.save(media)
-                    .flatMap({ cache.save(it) })
+                    .flatMap { cache.save(it) }
 
     fun delete(media: Media): Single<Media> =
             disk.delete(media)
-                    .flatMap({ cache.delete(it).toSingle() })
+                    .flatMap { cache.delete(it).toSingle() }
 
     fun clearCaches(): Completable =
             cache.deleteAll()
-                    .flatMapCompletable({ disk.deleteAll() })
+                    .flatMapCompletable { disk.deleteAll() }
 }

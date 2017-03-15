@@ -17,7 +17,7 @@ class ArticleRepository(private val cache: ArticleCache,
     fun get(id: String): Maybe<Article> {
         return cache.get(id)
                 .switchIfEmpty(disk.get(id)
-                        .flatMap({ cache.save(it).toMaybe() }))
+                        .flatMap { cache.save(it).toMaybe() })
     }
 
     /**
@@ -28,8 +28,8 @@ class ArticleRepository(private val cache: ArticleCache,
      */
     fun fetch(id: String): Single<Article> {
         return cloud.get(id)
-                .flatMap({ disk.save(it) })
-                .flatMap({ cache.save(it) })
+                .flatMap { disk.save(it) }
+                .flatMap { cache.save(it) }
     }
 
     /**
@@ -38,10 +38,10 @@ class ArticleRepository(private val cache: ArticleCache,
     fun list(page: Int, pageSize: Int): Maybe<List<Article>> {
         return cache.list(page, pageSize)
                 .switchIfEmpty(disk.list(page, pageSize)
-                        .flatMap({ cache.save(it).toMaybe() })
+                        .flatMap { cache.save(it).toMaybe() }
                         .switchIfEmpty(cloud.list(page, pageSize)
-                                .flatMap({ disk.save(it) })
-                                .flatMap({ cache.save(it) })
+                                .flatMap { disk.save(it) }
+                                .flatMap { cache.save(it) }
                                 .toMaybe()
                         )
                 )
@@ -53,10 +53,10 @@ class ArticleRepository(private val cache: ArticleCache,
      */
     fun refresh(pageSize: Int): Single<List<Article>> {
         return cloud.list(0, pageSize)
-                .flatMap({ disk.save(it) })
-                .flatMap({ list -> cache.deleteAll()
-                            .flatMap({ cache.save(list) })
-                })
+                .flatMap { disk.save(it) }
+                .flatMap { list -> cache.deleteAll()
+                            .flatMap { cache.save(list) }
+                }
     }
 
     /**
@@ -64,7 +64,7 @@ class ArticleRepository(private val cache: ArticleCache,
      */
     fun save(article: Article): Single<Article> {
         return disk.save(article)
-                .flatMap({ cache.save(it) })
+                .flatMap { cache.save(it) }
     }
 
     /**
@@ -72,7 +72,7 @@ class ArticleRepository(private val cache: ArticleCache,
      */
     fun delete(article: Article): Single<Article> {
         return disk.delete(article)
-                .flatMap({ cache.delete(it).toSingle() })
+                .flatMap { cache.delete(it).toSingle() }
     }
 
     /**

@@ -42,10 +42,10 @@ class MediaDisk(private val fileDir: File) {
     fun delete(media: Media): Single<Media> = delete(media.id)
 
     fun delete(id: String): Single<Media> =
-            get(id).flatMapSingle({
+            get(id).flatMapSingle {
                 realDelete(it.id)
                         .toSingleDefault(it)
-            })
+            }
 
     private fun realDelete(id: String): Completable =
             Completable.create { observer ->

@@ -14,17 +14,17 @@ class ArticleInteractor @Inject constructor(val articleRepository: ArticleReposi
 
     fun get(id: String): Maybe<Pair<Article, Media>> =
             articleRepository.get(id)
-                    .flatMap({ mergeWithMedia(it) })
+                    .flatMap { mergeWithMedia(it) }
 
     fun list(page: Int, pageSize: Int): Observable<Pair<Article, Media>> =
             articleRepository.list(page, pageSize).toObservable()
-                    .flatMapIterable({ it })
-                    .flatMap({ mergeWithMedia(it).toObservable() })
+                    .flatMapIterable { it }
+                    .flatMap { mergeWithMedia(it).toObservable() }
 
     fun refresh(pageSize: Int): Observable<Pair<Article, Media>> =
             articleRepository.refresh(pageSize).toObservable()
                     .flatMapIterable { it }
-                    .flatMap({ mergeWithMedia(it).toObservable() })
+                    .flatMap { mergeWithMedia(it).toObservable() }
 
     private fun mergeWithMedia(article: Article): Maybe<Pair<Article, Media>> =
             Maybe.just(article)
