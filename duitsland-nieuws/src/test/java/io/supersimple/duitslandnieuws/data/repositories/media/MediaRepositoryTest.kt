@@ -44,7 +44,7 @@ class MediaRepositoryTest {
             }
         }
         mockCloud = mock {
-            on { get(ArgumentMatchers.anyString()) } doReturn Single.error(IllegalStateException("Should not be called"))
+            on { get(ArgumentMatchers.anyString()) } doReturn Maybe.error(IllegalStateException("Should not be called"))
         }
 
         val mediaRepo = MediaRepository(mockCache, mockDisk, mockCloud)
@@ -73,7 +73,7 @@ class MediaRepositoryTest {
             }
         }
         mockCloud = mock {
-            on { get(ArgumentMatchers.anyString()) } doReturn Single.just(testMediaItem)
+            on { get(ArgumentMatchers.anyString()) } doReturn Maybe.just(testMediaItem)
         }
 
         val mediaRepo = MediaRepository(mockCache, mockDisk, mockCloud)

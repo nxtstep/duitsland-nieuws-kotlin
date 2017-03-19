@@ -17,29 +17,16 @@ class MediaDisk(private val fileDir: File) {
     }
 
     fun get(id: String): Maybe<Media> =
-            Maybe.create<Media> { observer ->
-                val file = fileForMediaItemId(id, fileDir)
-                if (file.exists()) {
-                    try {
-                        val item = file.readParcelable<Media>()
-                        observer.onSuccess(item)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        observer.onError(e)
-                    }
-                }
-                observer.onComplete()
-            }
+            Maybe.defer { Maybe.just(fileForMediaItemId(id, fileDir)) }
+                    .filter { it.exists() }
+                    .map { file -> file.readParcelable<Media>() }
 
     fun save(media: Media): Single<Media> =
-            Single.create { observer ->
-                val file = fileForMediaItem(media, fileDir)
-                if (file.writeParcelable(media)) {
-                    observer.onSuccess(media)
-                } else {
-                    observer.onError(IOException("Could not save Media item: [$media]"))
-                }
-            }
+            Single.defer { Single.just(fileForMediaItem(media, fileDir)) }
+                    .filter { it.writeParcelable(media) }
+                    .map { _ -> media }
+                    .switchIfEmpty { Single.error<Media>(IOException("Could not save Media item")) }
+                    .toSingle()
 
     fun delete(media: Media): Single<Media> = delete(media.id)
 
@@ -56,14 +43,7 @@ class MediaDisk(private val fileDir: File) {
                         file.remove()
                     }
 
-    fun deleteAll(): Completable =
-            Completable.create { observer ->
-                if (fileDir.deleteRecursively()) {
-                    observer.onComplete()
-                } else {
-                    observer.onError(IOException("Could not empty MediaDisk"))
-                }
-            }
+    fun deleteAll(): Completable = Completable.fromAction { fileDir.deleteRecursively() }
 
     companion object {
         const val MEDIA_DIR_NAME = "media"

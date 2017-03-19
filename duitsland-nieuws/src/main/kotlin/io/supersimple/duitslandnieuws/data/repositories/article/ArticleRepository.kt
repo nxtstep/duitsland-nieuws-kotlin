@@ -26,10 +26,10 @@ class ArticleRepository(private val cache: ArticleCache,
      *
      * @param Future for the Article
      */
-    fun fetch(id: String): Single<Article> {
+    fun fetch(id: String): Maybe<Article> {
         return cloud.get(id)
-                .flatMap { disk.save(it) }
-                .flatMap { cache.save(it) }
+                .flatMap { disk.save(it).toMaybe() }
+                .flatMap { cache.save(it).toMaybe() }
     }
 
     /**
