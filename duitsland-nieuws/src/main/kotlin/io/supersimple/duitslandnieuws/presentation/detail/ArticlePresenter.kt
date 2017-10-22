@@ -9,7 +9,7 @@ import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 import io.supersimple.duitslandnieuws.presentation.article.ArticleListViewModel
 import io.supersimple.duitslandnieuws.presentation.mvp.Presenter
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class ArticlePresenter(val articleId: String,
                        private val interactor: ArticleInteractor,

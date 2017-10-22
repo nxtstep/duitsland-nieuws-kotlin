@@ -3,14 +3,13 @@ package io.supersimple.duitslandnieuws.data.models
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.Html
-import android.text.SpannableString
-import android.text.Spanned
 import paperparcel.PaperParcel
+import kotlin.reflect.KClass
 
-@PaperParcel
 data class RenderableText(
         val rendered: String,
-        val protected: Boolean = false) : Parcelable {
+        val protected: Boolean = false
+) : Parcelable {
     companion object {
         val empty = RenderableText("", false)
 
@@ -26,13 +25,29 @@ data class RenderableText(
             }
         }
 
-        @JvmField val CREATOR = PaperParcelRenderableText.CREATOR
+        @JvmField
+        val CREATOR = object: Parcelable.Creator<RenderableText> {
+            override fun newArray(size: Int): Array<RenderableText?> = arrayOfNulls(size)
+
+            override fun createFromParcel(source: Parcel?): RenderableText {
+                source?.apply {
+                    val protected = readInt() == 1
+                    val text = readString()
+
+                    return RenderableText(rendered = text, protected = protected)
+                }
+                throw IllegalStateException("No parcelable source given")
+            }
+        }
+
     }
+
 
     fun text(): CharSequence = fromHtml(rendered)
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        PaperParcelRenderableText.writeToParcel(this, dest, flags)
+        dest.writeInt(if (protected) 1 else 0)
+        dest.writeString(rendered)
     }
 
     override fun describeContents(): Int = 0

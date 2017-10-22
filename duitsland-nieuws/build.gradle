@@ -15,8 +15,8 @@ kapt {
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion sdk.compileVersion
+    buildToolsVersion sdk.buildToolsVersion
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
@@ -32,8 +32,8 @@ android {
 
     defaultConfig {
         applicationId "io.supersimple.duitslandnieuws"
-        minSdkVersion 23
-        targetSdkVersion 25
+        minSdkVersion sdk.minVersion
+        targetSdkVersion sdk.targetVersion
         versionCode versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
@@ -197,17 +197,6 @@ dependencies {
 
     // OkHttpClient mocking
     testCompile test.mockWebserver
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        //
-        // Kotlin
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
-    }
 }
 
 dexcount {

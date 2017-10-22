@@ -6,6 +6,7 @@ import io.reactivex.Single
 import io.supersimple.duitslandnieuws.data.models.Media
 import io.supersimple.duitslandnieuws.data.parcel.readParcelable
 import io.supersimple.duitslandnieuws.data.parcel.writeParcelable
+import io.supersimple.duitslandnieuws.rx.remove
 import java.io.File
 import java.io.IOException
 
@@ -24,6 +25,7 @@ class MediaDisk(private val fileDir: File) {
                         observer.onSuccess(item)
                     } catch (e: Exception) {
                         e.printStackTrace()
+                        observer.onError(e)
                     }
                 }
                 observer.onComplete()
@@ -35,7 +37,7 @@ class MediaDisk(private val fileDir: File) {
                 if (file.writeParcelable(media)) {
                     observer.onSuccess(media)
                 } else {
-                    observer.onError(IOException("Could not save Media item"))
+                    observer.onError(IOException("Could not save Media item: [$media]"))
                 }
             }
 
@@ -48,14 +50,11 @@ class MediaDisk(private val fileDir: File) {
             }
 
     private fun realDelete(id: String): Completable =
-            Completable.create { observer ->
-                val file = fileForMediaItemId(id, fileDir)
-                if (file.delete()) {
-                    observer.onComplete()
-                } else {
-                    observer.onError(IOException("Could not remove $file"))
-                }
-            }
+            Single.just(id)
+                    .map { fileForMediaItemId(id, fileDir) }
+                    .flatMapCompletable { file ->
+                        file.remove()
+                    }
 
     fun deleteAll(): Completable =
             Completable.create { observer ->

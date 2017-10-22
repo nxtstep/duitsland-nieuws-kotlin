@@ -8,21 +8,21 @@ abstract class SimpleMemCache<K, V>(internal val cache: MutableMap<K, V>) {
 
     fun get(id: K): Maybe<V> =
             Maybe.create { observer ->
-                if (cache.containsKey(id)) {
-                    observer.onSuccess(cache[id])
+                cache[id]?.let {
+                    observer.onSuccess(it)
                 }
                 observer.onComplete()
             }
 
+    //FIXME not offset needed since all is in memory already...
     fun list(page: Int, pageSize: Int): Maybe<List<V>> =
-            Maybe.create<List<V>> { observer ->
-                if (cache.isNotEmpty()) {
-                    val list = cache.values.toList()
-                    if ((page + 1) * pageSize <= list.size) {
-                        observer.onSuccess(list.subList(page * pageSize, (page + 1) * pageSize))
-                    }
-                }
-                observer.onComplete()
+            Maybe.defer {
+                Maybe.just(cache)
+                        .filter { it.isNotEmpty() && (page + 1) * pageSize <= it.size }
+                        .map { it.values.toList() }
+                        .map {
+                            it.subList(fromIndex = page * pageSize, toIndex = (page + 1) * pageSize)
+                        }
             }
 
     fun save(value: V): Single<V> =
@@ -38,8 +38,8 @@ abstract class SimpleMemCache<K, V>(internal val cache: MutableMap<K, V>) {
 
     fun delete(id: K): Maybe<V> =
             Maybe.create { observer ->
-                if (cache.containsKey(id)) {
-                    observer.onSuccess(cache.remove(id))
+                cache.remove(id)?.let {
+                    observer.onSuccess(it)
                 }
                 observer.onComplete()
             }

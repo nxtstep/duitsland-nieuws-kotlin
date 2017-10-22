@@ -54,7 +54,8 @@ class ArticleRepository(private val cache: ArticleCache,
     fun refresh(pageSize: Int): Single<List<Article>> {
         return cloud.list(0, pageSize)
                 .flatMap { disk.save(it) }
-                .flatMap { list -> cache.deleteAll()
+                .flatMap { list ->
+                    cache.deleteAll()
                             .flatMap { cache.save(list) }
                 }
     }

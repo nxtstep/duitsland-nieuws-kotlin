@@ -8,7 +8,8 @@ import io.supersimple.duitslandnieuws.di.qualifier.ApplicationContext
 import io.supersimple.duitslandnieuws.di.qualifier.BaseUrl
 import javax.inject.Singleton
 
-@Module class AppModule(val context: Context) {
+@Module
+class AppModule(val context: Context) {
 
     @Provides
     @Singleton

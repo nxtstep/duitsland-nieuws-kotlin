@@ -16,7 +16,15 @@ import io.supersimple.duitslandnieuws.R
 import io.supersimple.duitslandnieuws.di.activity.ActivityComponentBuilderProvider
 import io.supersimple.duitslandnieuws.presentation.ComponentActivity
 import io.supersimple.duitslandnieuws.presentation.article.adapter.ArticleItemLayout
-import kotlinx.android.synthetic.main.activity_article_detail.*
+import kotlinx.android.synthetic.main.activity_article_detail.app_bar_layout
+import kotlinx.android.synthetic.main.activity_article_detail.content_frame
+import kotlinx.android.synthetic.main.activity_article_detail.im_article_header
+import kotlinx.android.synthetic.main.activity_article_detail.pb_article_detail
+import kotlinx.android.synthetic.main.activity_article_detail.toolbar
+import kotlinx.android.synthetic.main.activity_article_detail.tv_article_date
+import kotlinx.android.synthetic.main.activity_article_detail.tv_article_text
+import kotlinx.android.synthetic.main.activity_article_detail.tv_article_title
+import kotlinx.android.synthetic.main.activity_article_detail.tv_photo_caption
 import javax.inject.Inject
 import android.support.v4.util.Pair as AndroidPair
 

@@ -12,7 +12,8 @@ import io.supersimple.duitslandnieuws.data.repositories.article.Models
 import io.supersimple.duitslandnieuws.di.qualifier.ApplicationContext
 import javax.inject.Singleton
 
-@Module class DatabaseModule {
+@Module
+class DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): KotlinReactiveEntityStore<Persistable> {

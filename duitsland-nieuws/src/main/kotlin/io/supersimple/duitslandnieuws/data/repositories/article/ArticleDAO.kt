@@ -1,8 +1,12 @@
 package io.supersimple.duitslandnieuws.data.repositories.article
 
-import io.requery.*
+import io.requery.Convert
+import io.requery.Converter
+import io.requery.Entity
+import io.requery.Key
+import io.requery.Persistable
 import io.supersimple.duitslandnieuws.data.models.RenderableText
-import java.util.*
+import java.util.Date
 
 @Entity
 interface ArticleDAO : Persistable {

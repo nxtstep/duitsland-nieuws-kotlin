@@ -14,7 +14,8 @@ import io.supersimple.duitslandnieuws.presentation.ComponentFragment
 import io.supersimple.duitslandnieuws.presentation.article.adapter.ArticleItemLayout
 import io.supersimple.duitslandnieuws.presentation.article.adapter.ArticleListAdapter
 import io.supersimple.duitslandnieuws.presentation.detail.ArticleDetailActivity
-import kotlinx.android.synthetic.main.fragment_article_list.*
+import kotlinx.android.synthetic.main.fragment_article_list.rv_article_list
+import kotlinx.android.synthetic.main.fragment_article_list.swipe_refresh_layout
 import javax.inject.Inject
 
 

@@ -18,7 +18,8 @@ import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepository
 import io.supersimple.duitslandnieuws.di.qualifier.ApplicationContext
 import javax.inject.Singleton
 
-@Module class SessionModule {
+@Module
+class SessionModule {
     @Provides
     @Singleton
     fun provideArticleRepository(database: KotlinReactiveEntityStore<Persistable>,

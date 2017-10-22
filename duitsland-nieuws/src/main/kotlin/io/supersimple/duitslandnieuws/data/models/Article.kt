@@ -1,6 +1,6 @@
 package io.supersimple.duitslandnieuws.data.models
 
-import java.util.*
+import java.util.Date
 
 data class Article(
         val id: String,

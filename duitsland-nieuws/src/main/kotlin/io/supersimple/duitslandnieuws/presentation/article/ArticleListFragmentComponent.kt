@@ -4,12 +4,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
 import io.reactivex.Scheduler
-import io.supersimple.duitslandnieuws.di.qualifier.IOScheduler
-import io.supersimple.duitslandnieuws.di.qualifier.MainScheduler
 import io.supersimple.duitslandnieuws.di.fragment.FragmentComponent
 import io.supersimple.duitslandnieuws.di.fragment.FragmentComponentBuilder
 import io.supersimple.duitslandnieuws.di.fragment.FragmentModule
 import io.supersimple.duitslandnieuws.di.fragment.FragmentScope
+import io.supersimple.duitslandnieuws.di.qualifier.IOScheduler
+import io.supersimple.duitslandnieuws.di.qualifier.MainScheduler
 import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 
 @FragmentScope

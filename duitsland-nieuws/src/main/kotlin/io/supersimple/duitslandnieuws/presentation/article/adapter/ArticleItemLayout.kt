@@ -9,7 +9,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.card_article.view.*
+import kotlinx.android.synthetic.main.card_article.view.iv_article_image
+import kotlinx.android.synthetic.main.card_article.view.tv_article_excerpt
+import kotlinx.android.synthetic.main.card_article.view.tv_article_pub_date
+import kotlinx.android.synthetic.main.card_article.view.tv_article_title
 
 class ArticleItemLayout : LinearLayout {
     lateinit var titleTextView: TextView
