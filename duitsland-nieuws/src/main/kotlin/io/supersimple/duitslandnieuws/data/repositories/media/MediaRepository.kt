@@ -14,8 +14,8 @@ class MediaRepository(private val cache: MediaCache,
                     .switchIfEmpty(disk.get(id)
                             .flatMap { cache.save(it).toMaybe() }
                             .switchIfEmpty(cloud.get(id)
-                                    .flatMap { disk.save(it) }
-                                    .flatMapMaybe { cache.save(it).toMaybe() }
+                                    .flatMap { disk.save(it).toMaybe() }
+                                    .flatMap { cache.save(it).toMaybe() }
                             )
                     )
 

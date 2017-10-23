@@ -61,7 +61,7 @@ class ArticleRepositoryTest {
             }
         }
         mockCloud = mock {
-            on { get(anyString()) } doReturn Single.just(testArticle)
+            on { get(anyString()) } doReturn Maybe.just(testArticle)
         }
 
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
