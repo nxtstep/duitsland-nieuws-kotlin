@@ -28,7 +28,9 @@ ext.versions = [
         robolectric       : '3.3.2',
         mockito           : '2.8.9',
         dexmaker          : '2.2.0',
-        mockitoKotlin     : '1.4.0'
+        mockitoKotlin     : '1.4.0',
+        wiremock          : '2.8.0',
+        slf4j             : '1.7.25'
 ]
 
 ext.gradlePlugins = [
@@ -98,11 +100,12 @@ ext.androidTest = [
 
 // test
 ext.test = [
-        junit        : "junit:junit:$versions.junit",
-        robolectric  : "org.robolectric:robolectric:$versions.robolectric",
-        mockito      : [
+        junit      : "junit:junit:$versions.junit",
+        robolectric: "org.robolectric:robolectric:$versions.robolectric",
+        mockito    : [
                 core  : "org.mockito:mockito-core:$versions.mockito",
                 kotlin: "com.nhaarman:mockito-kotlin:$versions.mockitoKotlin"
         ],
-        mockWebserver: "com.squareup.okhttp3:mockwebserver:$versions.okHttp"
+        wiremock   : "com.github.tomakehurst:wiremock-standalone:$versions.wiremock",
+        slf4j      : "org.slf4j:slf4j-simple:$versions.slf4j"
 ]
