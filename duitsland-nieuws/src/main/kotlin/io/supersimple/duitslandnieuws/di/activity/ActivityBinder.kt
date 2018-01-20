@@ -8,7 +8,7 @@ import io.supersimple.duitslandnieuws.presentation.article.ArticleListComponent
 import io.supersimple.duitslandnieuws.presentation.detail.ArticleDetailActivity
 import io.supersimple.duitslandnieuws.presentation.detail.ArticleDetailComponent
 
-@Module(subcomponents = arrayOf(ArticleListComponent::class, ArticleDetailComponent::class))
+@Module(subcomponents = [ArticleListComponent::class, ArticleDetailComponent::class])
 abstract class ActivityBinder {
 
     @Binds

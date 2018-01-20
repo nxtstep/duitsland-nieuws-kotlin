@@ -7,12 +7,12 @@ import io.supersimple.duitslandnieuws.di.session.SessionModule
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = arrayOf(AppModule::class,
+@Component(modules = [AppModule::class,
         ThreadingModule::class,
         NetworkModule::class,
         DatabaseModule::class,
         ActivityBinder::class,
-        SessionModule::class))
+        SessionModule::class])
 interface AppComponent {
 
     fun inject(application: DuitslandNieuwsApplication): DuitslandNieuwsApplication

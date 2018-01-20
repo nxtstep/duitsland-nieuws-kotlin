@@ -13,7 +13,7 @@ import io.supersimple.duitslandnieuws.di.qualifier.MainScheduler
 import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 
 @FragmentScope
-@Subcomponent(modules = arrayOf(ArticleListFragmentComponent.ArticleListModule::class))
+@Subcomponent(modules = [ArticleListFragmentComponent.ArticleListModule::class])
 interface ArticleListFragmentComponent : FragmentComponent<ArticleListFragment> {
 
     @Subcomponent.Builder

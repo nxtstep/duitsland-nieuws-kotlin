@@ -3,8 +3,6 @@ package io.supersimple.duitslandnieuws.data.models
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.Html
-import paperparcel.PaperParcel
-import kotlin.reflect.KClass
 
 data class RenderableText(
         val rendered: String,
@@ -18,6 +16,7 @@ data class RenderableText(
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
                 } else {
+                    @Suppress("DEPRECATION")
                     return Html.fromHtml(html)
                 }
             } catch (t: Throwable) {
@@ -26,7 +25,7 @@ data class RenderableText(
         }
 
         @JvmField
-        val CREATOR = object: Parcelable.Creator<RenderableText> {
+        val CREATOR = object : Parcelable.Creator<RenderableText> {
             override fun newArray(size: Int): Array<RenderableText?> = arrayOfNulls(size)
 
             override fun createFromParcel(source: Parcel?): RenderableText {

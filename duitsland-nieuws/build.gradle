@@ -10,9 +10,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.getkeepsafe.dexcount'
 
-kapt {
-    generateStubs = true
-}
 
 android {
     compileSdkVersion sdk.compileVersion
@@ -102,76 +99,75 @@ android {
         resolutionStrategy.force libraries.androidSupport
         resolutionStrategy.force libraries.androidDesign
         resolutionStrategy.force libraries.kotlin
+        resolutionStrategy.force libraries.kotlinReflect
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    compile libraries.androidSupport
-    compile libraries.androidDesign
+    implementation libraries.androidSupport
+    implementation libraries.androidDesign
     //
     // Kotlin
-    compile libraries.kotlin
+    implementation libraries.kotlin
 
     // RxJava
-    compile libraries.rxJava
-    compile libraries.rxAndroid
+    implementation libraries.rxJava
+    implementation libraries.rxAndroid
 
     //Dagger 2
-    compile libraries.dagger
+    implementation libraries.dagger
     kapt kaptPlugin.dagger.compiler
 
     // Requery persistency
-    compile libraries.requery.core
-    compile libraries.requery.kotlin
-    compile libraries.requery.android
+    implementation libraries.requery.core
+    implementation libraries.requery.kotlin
+    implementation libraries.requery.android
     kapt kaptPlugin.requery.processor
 
     // PaperParcel
-    compile libraries.paperParcel.core
-    compile libraries.paperParcel.kotlin
+    implementation libraries.paperParcel.core
+    implementation libraries.paperParcel.kotlin
     kapt kaptPlugin.paperParcel.compiler
 
     // GSON
-    compile libraries.gson
+    implementation libraries.gson
 
     // OkHttpClient
-    compile libraries.okHttp.core
-    compile libraries.okHttp.loggingInterceptor
+    implementation libraries.okHttp.core
+    implementation libraries.okHttp.loggingInterceptor
 
-    compile libraries.retrofit2.core
-    compile libraries.retrofit2.gsonconverter
-    compile libraries.retrofit2.rxjava2
+    implementation libraries.retrofit2.core
+    implementation libraries.retrofit2.gsonconverter
+    implementation libraries.retrofit2.rxjava2
 
     //
     // SuperSimple
-    compile libraries.superSimple
+    implementation libraries.superSimple
 
     // Picasso image loading
-    compile libraries.picasso
+    implementation libraries.picasso
 
     //
     // Test-only dependencies
     // Force usage of support annotations in the test app, since it is internally used by the runner module.
-    androidTestCompile androidTest.supportAnnotations
-    androidTestCompile androidTest.testRunner
+    androidTestImplementation androidTest.supportAnnotations
+    androidTestImplementation androidTest.testRunner
     // Set this dependency to use JUnit 4 rules
-    androidTestCompile androidTest.testRules
+    androidTestImplementation androidTest.testRules
     // Espresso
-    androidTestCompile androidTest.espresso.core
-    androidTestCompile(androidTest.espresso.contrib) {
+    androidTestImplementation androidTest.espresso.core
+    androidTestImplementation(androidTest.espresso.contrib) {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude module: 'support-annotations'
         exclude module: 'recyclerview-v7'
     }
-    androidTestCompile androidTest.espresso.intents
+    androidTestImplementation androidTest.espresso.intents
 
-    testCompile test.junit
+    testImplementation test.junit
     //
     // UnitTest with Robolectric
-    testCompile(test.robolectric) {
+    testImplementation(test.robolectric) {
         exclude module: 'classworlds'
         exclude module: 'commons-logging'
         exclude module: 'httpclient'
@@ -190,13 +186,13 @@ dependencies {
     }
 
     // Mockito
-    testCompile test.mockito.core
-    testCompile (test.mockito.kotlin) {
+    testImplementation test.mockito.core
+    testImplementation (test.mockito.kotlin) {
         exclude group: 'org.mockito', module: 'mockito-core'
     }
 
-    testCompile test.wiremock
-    testCompile test.slf4j
+    testImplementation test.wiremock
+    testImplementation test.slf4j
 }
 
 dexcount {
@@ -208,7 +204,6 @@ dexcount {
     verbose = false
     maxTreeDepth = Integer.MAX_VALUE
     teamCityIntegration = false
-    enableForInstantRun = false
     teamCitySlug = null
     runOnEachAssemble = true
 }

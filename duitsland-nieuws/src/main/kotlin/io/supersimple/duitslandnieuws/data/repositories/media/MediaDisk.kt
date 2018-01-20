@@ -4,29 +4,40 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.supersimple.duitslandnieuws.data.models.Media
+import io.supersimple.duitslandnieuws.data.parcel.ParcelableProvider
 import io.supersimple.duitslandnieuws.data.parcel.readParcelable
 import io.supersimple.duitslandnieuws.data.parcel.writeParcelable
 import io.supersimple.duitslandnieuws.rx.remove
 import java.io.File
 import java.io.IOException
 
-class MediaDisk(private val fileDir: File) {
+class MediaDisk(
+        private val fileDir: File,
+        private val parcelableProvider: ParcelableProvider = ParcelableProvider.default
+) {
 
     init {
         File(fileDir.path, MEDIA_DIR_NAME).mkdirs()
     }
 
     fun get(id: String): Maybe<Media> =
-            Maybe.defer { Maybe.just(fileForMediaItemId(id, fileDir)) }
-                    .filter { it.exists() }
-                    .map { file -> file.readParcelable<Media>() }
+            Maybe.defer {
+                Maybe.just(fileForMediaItemId(id, fileDir))
+                        .flatMap { file ->
+                            Maybe.create<Media> { observer ->
+                                file.readParcelable<Media>(parcelableProvider)?.let {
+                                    observer.onSuccess(it)
+                                }
+                                observer.onComplete()
+                            }
+                        }
+            }
 
     fun save(media: Media): Single<Media> =
             Single.defer { Single.just(fileForMediaItem(media, fileDir)) }
-                    .filter { it.writeParcelable(media) }
+                    .filter { it.writeParcelable(media, parcelableProvider) }
                     .map { _ -> media }
-                    .switchIfEmpty { Single.error<Media>(IOException("Could not save Media item")) }
-                    .toSingle()
+                    .switchIfEmpty(Single.error(IOException("Could not save Media item")))
 
     fun delete(media: Media): Single<Media> = delete(media.id)
 

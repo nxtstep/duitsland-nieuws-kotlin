@@ -7,15 +7,17 @@ import io.requery.sql.KotlinEntityDataStore
 import io.requery.sql.TableCreationMode
 import io.supersimple.duitslandnieuws.data.models.Article
 import io.supersimple.duitslandnieuws.data.models.RenderableText
-import junit.framework.Assert.assertEquals
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-import java.util.*
+import java.util.Arrays
+import java.util.Calendar
+import java.util.Date
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)

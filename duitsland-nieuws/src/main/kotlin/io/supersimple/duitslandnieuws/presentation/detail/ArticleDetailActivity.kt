@@ -74,7 +74,7 @@ open class ArticleDetailActivity : ComponentActivity(), ArticleView {
     }
 
     override fun showLoading(flag: Boolean) {
-        pb_article_detail.visibility = if (flag === true) View.VISIBLE else View.GONE
+        pb_article_detail.visibility = if (flag == true) View.VISIBLE else View.GONE
     }
 
     override fun showArticle(article: ArticleDetailPresentation) {

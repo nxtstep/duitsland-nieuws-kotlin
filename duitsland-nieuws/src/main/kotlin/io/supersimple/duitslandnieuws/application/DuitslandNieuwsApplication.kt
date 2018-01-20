@@ -18,6 +18,7 @@ class DuitslandNieuwsApplication : Application(), ActivityComponentBuilderProvid
             Map<Class<out Activity>, @JvmSuppressWildcards Provider<ActivityComponentBuilder<*, *>>>
 
     override fun <A : Activity, M : ActivityModule<A>, C : ActivityComponent<A>> activityComponentBuilder(activityClass: Class<out A>): ActivityComponentBuilder<M, C>? {
+        @Suppress("UNCHECKED_CAST")
         return activityComponentBuilders[activityClass]?.get() as? ActivityComponentBuilder<M, C>
     }
 

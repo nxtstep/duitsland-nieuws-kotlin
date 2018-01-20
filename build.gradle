@@ -9,6 +9,7 @@ buildscript {
     apply from: rootProject.file('dependencies.gradle')
     repositories {
         jcenter()
+        google()
     }
     dependencies {
         classpath gradlePlugins.android
@@ -27,13 +28,18 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        google()
         maven { url "https://jitpack.io" }
     }
     
     plugins.apply('checkstyle')
     
     checkstyle {
-        toolVersion = '6.12'
+        toolVersion = '8.7'
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions.allWarningsAsErrors = true
     }
     
     task('checkstyle', type: Checkstyle) {
