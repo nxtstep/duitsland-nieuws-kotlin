@@ -14,8 +14,8 @@ import io.supersimple.duitslandnieuws.di.qualifier.MainScheduler
 import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 
 @ActivityScope
-@Subcomponent(modules = arrayOf(ArticleDetailComponent.ArticleDetailModule::class,
-        FragmentBinder::class))
+@Subcomponent(modules = [ArticleDetailComponent.ArticleDetailModule::class,
+        FragmentBinder::class])
 interface ArticleDetailComponent : ActivityComponent<ArticleDetailActivity> {
     @Subcomponent.Builder
     interface Builder : ActivityComponentBuilder<ArticleDetailModule, ArticleDetailComponent>

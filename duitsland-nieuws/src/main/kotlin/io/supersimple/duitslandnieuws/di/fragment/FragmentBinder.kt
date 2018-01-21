@@ -6,7 +6,7 @@ import dagger.multibindings.IntoMap
 import io.supersimple.duitslandnieuws.presentation.article.ArticleListFragment
 import io.supersimple.duitslandnieuws.presentation.article.ArticleListFragmentComponent
 
-@Module(subcomponents = arrayOf(ArticleListFragmentComponent::class))
+@Module(subcomponents = [ArticleListFragmentComponent::class])
 abstract class FragmentBinder {
     @Binds
     @IntoMap

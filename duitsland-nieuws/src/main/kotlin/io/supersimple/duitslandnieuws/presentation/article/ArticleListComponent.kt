@@ -9,8 +9,8 @@ import io.supersimple.duitslandnieuws.di.activity.ActivityScope
 import io.supersimple.duitslandnieuws.di.fragment.FragmentBinder
 
 @ActivityScope
-@Subcomponent(modules = arrayOf(ArticleListComponent.ArticleListModule::class,
-        FragmentBinder::class))
+@Subcomponent(modules = [ArticleListComponent.ArticleListModule::class,
+        FragmentBinder::class])
 interface ArticleListComponent : ActivityComponent<ArticleListActivity> {
 
     @Subcomponent.Builder

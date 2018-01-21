@@ -5,6 +5,7 @@ import io.requery.Converter
 import io.requery.Entity
 import io.requery.Key
 import io.requery.Persistable
+import io.supersimple.duitslandnieuws.data.models.Article
 import io.supersimple.duitslandnieuws.data.models.RenderableText
 import java.util.Date
 
@@ -54,5 +55,37 @@ interface ArticleDAO : Persistable {
         override fun convertToPersisted(value: RenderableText?): String =
                 value?.protected.toString() + SEPARATOR_SYMBOL + value?.rendered
     }
+
+    companion object {
+
+        internal fun from(article: Article): ArticleDAO {
+            val o = ArticleDAOEntity()
+            o.setId(article.id)
+            o.setDate(article.date)
+            o.setModified(article.modified)
+            o.setSlug(article.slug)
+            o.setLink(article.link)
+            o.setTitle(article.title)
+            o.setContent(article.content)
+            o.setExcerpt(article.excerpt)
+            o.setAuthor(article.author)
+            o.setFeatured_media(article.featured_media)
+            return o
+        }
+    }
 }
 
+fun Article.toDAO(): ArticleDAO = ArticleDAO.from(this)
+
+fun ArticleDAO.toArticle() = Article(
+        id,
+        date,
+        modified,
+        slug,
+        link,
+        title,
+        content,
+        excerpt,
+        author,
+        featured_media
+)

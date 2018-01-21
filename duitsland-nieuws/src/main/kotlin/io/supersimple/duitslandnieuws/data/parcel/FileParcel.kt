@@ -1,7 +1,5 @@
 package io.supersimple.duitslandnieuws.data.parcel
 
-import android.os.Bundle
-import android.os.Parcel
 import android.os.Parcelable
 import java.io.File
 import java.io.FileInputStream
@@ -9,15 +7,14 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 @Throws(IOException::class)
-fun File.writeParcelable(item: Parcelable): Boolean {
+fun File.writeParcelable(item: Parcelable, provider: ParcelableProvider): Boolean {
     if (!exists()) {
         createNewFile()
     }
-    val parcel = Parcel.obtain()
+    val parcel = provider.obtain()
     try {
-        val bundle = Bundle()
-        bundle.putParcelable(PARCEL_KEY, item)
-        bundle.writeToParcel(parcel, 0)
+        // Wrap inside an array since `getParcelable()` won't recognize the parcelables ClassLoader (even when passed in as argument)
+        parcel.writeArray(arrayOf(item))
         val outputStream = FileOutputStream(this, false)
         outputStream.write(parcel.marshall())
         outputStream.flush()
@@ -29,9 +26,9 @@ fun File.writeParcelable(item: Parcelable): Boolean {
 }
 
 @Throws(IOException::class)
-inline fun <reified T : Parcelable> File.readParcelable(): T {
+inline fun <reified T : Parcelable> File.readParcelable(provider: ParcelableProvider): T? {
     if (exists()) {
-        val reader = Parcel.obtain()
+        val reader = provider.obtain()
         try {
             val inputStream = FileInputStream(this)
             val array = ByteArray(inputStream.channel.size().toInt())
@@ -40,14 +37,12 @@ inline fun <reified T : Parcelable> File.readParcelable(): T {
 
             reader.unmarshall(array, 0, array.size)
             reader.setDataPosition(0)
-            val bundle = reader.readBundle(T::class.java.classLoader)
-            val item: T = bundle.getParcelable(PARCEL_KEY)
-            return item
+            val list = mutableListOf<T>()
+            reader.readList(list, T::class.java.classLoader)
+            return if (list.size > 0) list[0] else null
         } finally {
             reader.recycle()
         }
     }
-    throw IOException("File $this does not exists")
+    return null
 }
-
-const val PARCEL_KEY = "parcel"

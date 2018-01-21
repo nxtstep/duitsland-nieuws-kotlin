@@ -29,6 +29,7 @@ abstract class ComponentActivity : AppCompatActivity(), FragmentComponentBuilder
     protected abstract fun injectMembers(activityComponentBuilder: ActivityComponentBuilderProvider)
 
     override fun <F : Fragment, M : FragmentModule<F>, C : FragmentComponent<F>> fragmentComponentBuilder(fragmentClass: Class<out F>): FragmentComponentBuilder<M, C>? {
+        @Suppress("UNCHECKED_CAST")
         return fragmentComponentBuilderMap[fragmentClass]?.get() as? FragmentComponentBuilder<M, C>
     }
 }
