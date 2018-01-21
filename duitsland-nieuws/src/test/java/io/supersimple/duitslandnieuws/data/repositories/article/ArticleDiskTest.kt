@@ -1,227 +1,262 @@
 package io.supersimple.duitslandnieuws.data.repositories.article
 
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.verify
+import io.reactivex.Completable
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.requery.Persistable
-import io.requery.android.sqlite.DatabaseSource
+import io.requery.kotlin.Deletion
+import io.requery.kotlin.Limit
+import io.requery.kotlin.Offset
+import io.requery.kotlin.Selection
+import io.requery.kotlin.WhereAndOr
+import io.requery.query.Condition
+import io.requery.query.OrderingExpression
+import io.requery.query.Return
 import io.requery.reactivex.KotlinReactiveEntityStore
-import io.requery.sql.KotlinEntityDataStore
-import io.requery.sql.TableCreationMode
+import io.requery.reactivex.ReactiveResult
+import io.requery.reactivex.ReactiveScalar
 import io.supersimple.duitslandnieuws.data.models.Article
 import io.supersimple.duitslandnieuws.data.models.RenderableText
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
-import org.robolectric.annotation.Config
-import java.util.Arrays
-import java.util.Calendar
 import java.util.Date
 
-@RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class ArticleDiskTest {
     companion object {
-        val TEST_ARTICLE_DATABASE = "test_article.db"
 
-        fun insertTestData(store: KotlinReactiveEntityStore<Persistable>, id: String, date: Date, modified: Date) {
-            store.insert(testArticleDAO(id, date, modified)).subscribe()
-        }
-
-        fun testArticleDAO(id: String,
-                           date: Date = Date(),
-                           modified: Date = Date(),
-                           slug: String = "Super slug",
-                           link: String = "http://www.link.com",
-                           title: RenderableText = RenderableText("Title rendering", false),
-                           content: RenderableText = RenderableText("Content rendering", true),
-                           excerpt: RenderableText = RenderableText("Excerpt rendering", true),
-                           author: String = "Author",
-                           media: String = "media-id"): ArticleDAO {
-            val article = ArticleDAOEntity()
-            article.setId(id)
-            article.setDate(date)
-            article.setModified(modified)
-            article.setSlug(slug)
-            article.setLink(link)
-            article.setTitle(title)
-            article.setContent(content)
-            article.setExcerpt(excerpt)
-            article.setAuthor(author)
-            article.setFeatured_media(media)
-
-            return article
-        }
-
-        fun testArticle(id: String,
-                        date: Date = Date(),
-                        modified: Date = Date(),
-                        slug: String = "Super slug",
-                        link: String = "http://www.link.com",
-                        title: RenderableText = RenderableText("Title rendering", false),
-                        content: RenderableText = RenderableText("Content rendering", true),
-                        excerpt: RenderableText = RenderableText("Excerpt rendering", true),
-                        author: String = "Author",
-                        media: String = "media-id"): Article {
-            return Article(id, date, modified, slug, link, title, content, excerpt, author, media)
-        }
+        private fun createTestArticle(id: String,
+                                      date: Date = Date(),
+                                      modified: Date = Date(),
+                                      slug: String = "Super slug",
+                                      link: String = "http://www.link.com",
+                                      title: RenderableText = RenderableText("Title rendering", false),
+                                      content: RenderableText = RenderableText("Content rendering", true),
+                                      excerpt: RenderableText = RenderableText("Excerpt rendering", true),
+                                      author: String = "Author",
+                                      media: String = "media-id"): Article =
+                Article(id, date, modified, slug, link, title, content, excerpt, author, media)
     }
 
-    lateinit var dataStore: KotlinReactiveEntityStore<Persistable>
-
-    @Before
-    fun setup() {
-        val dataSource = DatabaseSource(RuntimeEnvironment.application, Models.DEFAULT, TEST_ARTICLE_DATABASE, 1)
-        dataSource.setTableCreationMode(TableCreationMode.DROP_CREATE)
-        val entityStore = KotlinEntityDataStore<Persistable>(dataSource.configuration)
-        dataStore = KotlinReactiveEntityStore(entityStore)
-    }
-
-    @After
-    fun tearDown() {
-        resetDatabase()
-    }
-
-    private fun resetDatabase() {
-        RuntimeEnvironment.application.deleteDatabase(TEST_ARTICLE_DATABASE)
-    }
+    private lateinit var dataStore: KotlinReactiveEntityStore<Persistable>
 
     @Test
     fun testGet() {
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.MILLISECOND, 0)
-        val modified = calendar.time
-        val date = Date(modified.time - 1000 * 3600 * 24)
-        insertTestData(dataStore, "test-id-1", date, modified)
+        // Given
+        val articleId = "test-id-1"
+        val expectedArticle = createTestArticle(articleId)
 
-        val expectedArticle = testArticle("test-id-1", date, modified)
+        val result: ReactiveResult<ArticleDAO> = mock {
+            on { maybe() } doReturn Maybe.just(expectedArticle.toDAO())
+        }
 
+        val where: WhereAndOr<ReactiveResult<ArticleDAO>> = mock {
+            on { get() } doReturn result
+        }
+
+        val selection: Selection<ReactiveResult<ArticleDAO>> = mock {
+            on { where<String>(condition = any()) }.thenReturn(where)
+        }
+
+        dataStore = mock {
+            on { select<ArticleDAO>(type = any()) } doReturn selection
+        }
+
+        // Given
         val disk = ArticleDisk(dataStore)
-        disk.get("test-id-1")
+        disk.get(articleId)
                 .test()
                 .assertValueCount(1)
                 .assertResult(expectedArticle)
 
-        // Get non-existing
-        disk.get("test-id-2")
-                .test()
-                .assertNoValues()
-                .assertNoErrors()
-                .assertComplete()
+        // Then
+        verify(dataStore).select(eq(ArticleDAO::class))
+        val captor = argumentCaptor<Condition<String, *>>()
+        verify(selection).where(captor.capture())
+        assertEquals(articleId, captor.firstValue.rightOperand)
     }
 
     @Test
     fun testSave() {
-        val article = testArticle("test-id-1")
-        val disk = ArticleDisk(dataStore)
+        val article = createTestArticle("test-id-1")
+        val articleDAO = article.toDAO()
 
+        dataStore = mock {
+            on { upsert(any<ArticleDAO>()) }.thenAnswer { Single.just(it.arguments[0]) }
+        }
+
+        val disk = ArticleDisk(dataStore)
         disk.save(article)
                 .test()
                 .assertResult(article)
 
-        assertEquals(1, dataStore.select(ArticleDAO::class).get().count())
+        verify(dataStore).upsert(entity = eq(articleDAO))
     }
 
     @Test
     fun testList() {
-        val modified = Date()
-        var date = Date(modified.time - 1000 * 3600 * 24)
-        insertTestData(dataStore, "test-id-1", date, modified)
-        date = Date(date.time + 1000 * 3600 * 24)
-        insertTestData(dataStore, "test-id-2", date, modified)
-        date = Date(date.time - 1000 * 3600 * 24 * 2)
-        insertTestData(dataStore, "test-id-3", date, modified)
+        // Given
+        val article = createTestArticle("test-list-id")
+        val reactiveResult = mock<ReactiveResult<ArticleDAO>> {
+            on { observable() } doReturn Observable.just(article.toDAO())
+        }
+        val result: Return<ReactiveResult<ArticleDAO>> = mock {
+            on { get() } doReturn reactiveResult
+        }
+        val offsetExpression = mock<Offset<ReactiveResult<ArticleDAO>>> {
+            on { offset(any()) } doReturn result
+        }
+        val orderByExpression = mock<Limit<ReactiveResult<ArticleDAO>>> {
+            on { limit(any()) }.thenReturn(offsetExpression)
+        }
+        val selection = mock<Selection<ReactiveResult<ArticleDAO>>> {
+            on { orderBy<Date>(any()) } doReturn orderByExpression
+        }
+
+        // When
+        dataStore = mock {
+            on { select<ArticleDAO>(type = any()) } doReturn selection
+        }
 
         val disk = ArticleDisk(dataStore)
         disk.list(0, 10)
                 .test()
-                .assertNoErrors()
-                .assertValue {
-                    it[0].id == "test-id-2" &&
-                            it[1].id == "test-id-1" &&
-                            it[2].id == "test-id-3"
-                }
-                .assertComplete()
+                .assertResult(listOf(article))
 
-        disk.list(1, 10)
-                .test()
-                .assertNoErrors()
-                .assertNoValues()
-                .assertComplete()
+        // Then
+        verify(dataStore).select(type = eq(ArticleDAO::class))
+        val captor = argumentCaptor<OrderingExpression<Date>>()
+        verify(selection).orderBy(captor.capture())
+        assertEquals(ArticleDAOEntity.DATE.desc().order, captor.firstValue.order)
+        assertEquals(ArticleDAOEntity.DATE.desc().innerExpression.name, captor.firstValue.innerExpression.name)
+        verify(orderByExpression).limit(eq(10))
+        verify(offsetExpression).offset(eq(0))
+        verify(result).get()
+        verify(reactiveResult).observable()
     }
 
     @Test
     fun testBulkSave() {
-        val modified = Date()
-        var date = Date(modified.time - 1000 * 3600 * 24)
-        val object1 = testArticle("test-id-1", date, modified)
-        date = Date(date.time + 1000 * 3600 * 24)
-        val object2 = testArticle("test-id-2", date, modified)
-        date = Date(date.time - 1000 * 3600 * 24 * 2)
-        val object3 = testArticle("test-id-3", date, modified)
+        val object1 = createTestArticle("test-id-1")
+        val object2 = createTestArticle("test-id-2")
+        val object3 = createTestArticle("test-id-3")
+
+        dataStore = mock {
+            on { upsert(any<ArticleDAO>()) }.thenAnswer { Single.just(it.arguments[0]) }
+        }
 
         val disk = ArticleDisk(dataStore)
-        disk.save(Arrays.asList(object1, object2, object3))
+        disk.save(listOf(object1, object2, object3))
                 .test()
                 .assertComplete()
                 .assertNoErrors()
                 .assertValueCount(1)
 
-        assertEquals(3, dataStore.select(ArticleDAO::class).get().count())
+        verify(dataStore).upsert(entity = eq(object1.toDAO()))
+        verify(dataStore).upsert(entity = eq(object2.toDAO()))
+        verify(dataStore).upsert(entity = eq(object3.toDAO()))
     }
 
     @Test
-    fun testDelete1() {
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.MILLISECOND, 0)
-        val modified = calendar.time
-        val date = Date(modified.time - 1000 * 3600 * 24)
-        insertTestData(dataStore, "test-id-1", date, modified)
+    fun testDelete() {
+        val articleId = "test-id-1"
+        val expectedArticle = createTestArticle(articleId)
 
-        val expected = testArticle("test-id-1", date, modified)
+        val result: ReactiveResult<ArticleDAO> = mock {
+            on { maybe() } doReturn Maybe.just(expectedArticle.toDAO())
+        }
+
+        val where: WhereAndOr<ReactiveResult<ArticleDAO>> = mock {
+            on { get() } doReturn result
+        }
+
+        val selection: Selection<ReactiveResult<ArticleDAO>> = mock {
+            on { where<String>(condition = any()) }.thenReturn(where)
+        }
+
+        dataStore = mock {
+            on { delete<ArticleDAO>(entity = any()) } doReturn Completable.complete()
+            on { select<ArticleDAO>(any()) } doReturn selection
+        }
 
         val disk = ArticleDisk(dataStore)
-        disk.delete("test-id-1")
+        disk.delete(articleId)
                 .test()
-                .assertResult(expected)
+                .assertResult(expectedArticle)
 
-        assertEquals(0, dataStore.select(ArticleDAO::class).get().count())
+        verify(dataStore).select(eq(ArticleDAO::class))
+        val captor = argumentCaptor<Condition<String, *>>()
+        verify(selection).where(captor.capture())
+        assertEquals(articleId, captor.firstValue.rightOperand)
+        verify(dataStore).delete(eq(expectedArticle.toDAO()))
     }
 
     @Test
-    fun testDelete2() {
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.MILLISECOND, 0)
-        val modified = calendar.time
-        val date = Date(modified.time - 1000 * 3600 * 24)
-        insertTestData(dataStore, "test-id-1", date, modified)
+    fun testDeleteArticle() {
+        val articleId = "test-id-1"
+        val article = createTestArticle(articleId)
 
-        val expected = testArticle("test-id-1", date, modified)
+        val result: ReactiveResult<ArticleDAO> = mock {
+            on { maybe() } doReturn Maybe.just(article.toDAO())
+        }
+
+        val where: WhereAndOr<ReactiveResult<ArticleDAO>> = mock {
+            on { get() } doReturn result
+        }
+
+        val selection: Selection<ReactiveResult<ArticleDAO>> = mock {
+            on { where<String>(condition = any()) }.thenReturn(where)
+        }
+
+        dataStore = mock {
+            on { delete<ArticleDAO>(entity = any()) } doReturn Completable.complete()
+            on { select<ArticleDAO>(any()) } doReturn selection
+        }
 
         val disk = ArticleDisk(dataStore)
-        disk.delete(expected)
+        disk.delete(article)
                 .test()
-                .assertResult(expected)
+                .assertResult(article)
 
-        assertEquals(0, dataStore.select(ArticleDAO::class).get().count())
+        verify(dataStore).select(eq(ArticleDAO::class))
+        val captor = argumentCaptor<Condition<String, *>>()
+        verify(selection).where(captor.capture())
+        assertEquals(articleId, captor.firstValue.rightOperand)
+        verify(dataStore).delete(eq(article.toDAO()))
     }
 
     @Test
-    fun testBulkDelete() {
-        val modified = Date()
-        val date = Date(modified.time - 1000 * 3600 * 24)
-        insertTestData(dataStore, "test-id-1", date, modified)
-        insertTestData(dataStore, "test-id-2", date, modified)
-        insertTestData(dataStore, "test-id-3", date, modified)
+    fun testDeleteAll() {
+        val scalar = mock<ReactiveScalar<Int>> {
+            on { single() } doReturn Single.just(3)
+        }
+
+        val deletion = mock<Deletion<ReactiveScalar<Int>>> {
+            on { get() } doReturn scalar
+        }
+
+        dataStore = mock {
+            on { delete<ArticleDAO>(type = any()) } doReturn deletion
+        }
 
         val disk = ArticleDisk(dataStore)
         disk.deleteAll()
                 .test()
-                .assertValue(3)
-                .assertNoErrors()
-                .assertComplete()
+                .assertResult(3)
 
-        assertEquals(0, dataStore.select(ArticleDAO::class).get().count())
+        verify(dataStore).delete(eq(ArticleDAO::class))
+    }
+
+    @Test
+    fun articleToDAO() {
+        val article = createTestArticle("test-1")
+        assertEquals(article, article.toDAO().toArticle())
     }
 }

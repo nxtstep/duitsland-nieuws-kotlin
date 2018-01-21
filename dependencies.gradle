@@ -25,7 +25,6 @@ ext.versions = [
         androidTestSupport: '0.4.1',
         espresso          : '2.2.2',
         junit             : '4.12',
-        robolectric       : '3.6.1',
         mockito           : '2.13.0',
         mockitoKotlin     : '1.5.0',
         dexmaker          : '2.2.0',
@@ -102,7 +101,6 @@ ext.androidTest = [
 // test
 ext.test = [
         junit      : "junit:junit:$versions.junit",
-        robolectric: "org.robolectric:robolectric:$versions.robolectric",
         mockito    : [
                 core  : "org.mockito:mockito-core:$versions.mockito",
                 kotlin: "com.nhaarman:mockito-kotlin:$versions.mockitoKotlin"
