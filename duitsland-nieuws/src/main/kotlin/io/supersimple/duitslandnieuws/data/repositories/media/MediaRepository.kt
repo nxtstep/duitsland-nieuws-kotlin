@@ -12,11 +12,14 @@ class MediaRepository(private val cache: MediaCache,
     fun get(id: String): Maybe<Media> =
             cache.get(id)
                     .switchIfEmpty(disk.get(id)
-                            .flatMap { cache.save(it).toMaybe() }
-                            .switchIfEmpty(cloud.get(id)
-                                    .flatMap { disk.save(it).toMaybe() }
-                                    .flatMap { cache.save(it).toMaybe() }
+                            .switchIfEmpty(
+                                    cloud.get(id).flatMap {
+                                        disk.save(it).toMaybe()
+                                    }
                             )
+                            .flatMap {
+                                cache.save(it).toMaybe()
+                            }
                     )
 
     fun save(media: Media): Single<Media> =
