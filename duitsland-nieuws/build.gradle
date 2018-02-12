@@ -139,10 +139,6 @@ dependencies {
     implementation libraries.retrofit2.gsonconverter
     implementation libraries.retrofit2.rxjava2
 
-    //
-    // SuperSimple
-    implementation libraries.superSimple
-
     // Picasso image loading
     implementation libraries.picasso
 
