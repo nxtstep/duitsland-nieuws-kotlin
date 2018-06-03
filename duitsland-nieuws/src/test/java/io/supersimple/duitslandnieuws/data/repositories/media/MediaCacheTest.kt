@@ -5,7 +5,8 @@ import io.supersimple.duitslandnieuws.data.models.MediaDetails
 import io.supersimple.duitslandnieuws.data.models.MediaItem
 import io.supersimple.duitslandnieuws.data.models.RenderableText
 import org.junit.Test
-import java.util.*
+import java.util.Date
+import java.util.HashMap
 
 class MediaCacheTest {
     @Test

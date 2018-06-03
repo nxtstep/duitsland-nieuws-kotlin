@@ -1,15 +1,26 @@
 package io.supersimple.duitslandnieuws.presentation.detail
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
 import io.reactivex.Maybe
 import io.reactivex.schedulers.TestScheduler
-import io.supersimple.duitslandnieuws.data.models.*
+import io.supersimple.duitslandnieuws.data.models.Article
+import io.supersimple.duitslandnieuws.data.models.Media
+import io.supersimple.duitslandnieuws.data.models.MediaDetails
+import io.supersimple.duitslandnieuws.data.models.MediaItem
+import io.supersimple.duitslandnieuws.data.models.RenderableText
 import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class ArticlePresenterTest {
 

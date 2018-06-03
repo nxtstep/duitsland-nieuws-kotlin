@@ -1,6 +1,12 @@
 package io.supersimple.duitslandnieuws.data.repositories.article
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.supersimple.duitslandnieuws.data.models.Article
@@ -8,7 +14,8 @@ import io.supersimple.duitslandnieuws.data.models.RenderableText
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import java.util.*
+import java.util.Collections
+import java.util.Date
 
 class ArticleRepositoryTest {
 
@@ -84,7 +91,7 @@ class ArticleRepositoryTest {
             }
         }
         mockDisk = mock {
-            on { list(anyInt(), anyInt()) } doReturn Maybe.just(Arrays.asList(testArticle))
+            on { list(anyInt(), anyInt()) } doReturn Maybe.just(listOf(testArticle))
             on { save(any<List<Article>>()) }.thenAnswer {
                 Single.just(it.arguments[0])
             }
@@ -96,7 +103,7 @@ class ArticleRepositoryTest {
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
         articleRepo.list(0, 10)
                 .test()
-                .assertResult(Arrays.asList(testArticle))
+                .assertResult(listOf(testArticle))
 
         verify(mockCache, times(1)).list(anyInt(), anyInt())
         verify(mockCache, times(1)).save(any<List<Article>>())
@@ -118,13 +125,13 @@ class ArticleRepositoryTest {
             }
         }
         mockCloud = mock {
-            on { list(anyInt(), anyInt()) } doReturn Single.just(Arrays.asList(testArticle))
+            on { list(anyInt(), anyInt()) } doReturn Single.just(listOf(testArticle))
         }
 
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
         articleRepo.list(1, 10)
                 .test()
-                .assertResult(Arrays.asList(testArticle))
+                .assertResult(listOf(testArticle))
 
         verify(mockCache, times(1)).list(anyInt(), anyInt())
         verify(mockCache, times(1)).save(any<List<Article>>())
@@ -148,13 +155,13 @@ class ArticleRepositoryTest {
             }
         }
         mockCloud = mock {
-            on { list(anyInt(), anyInt()) } doReturn Single.just(Arrays.asList(testArticle))
+            on { list(anyInt(), anyInt()) } doReturn Single.just(listOf(testArticle))
         }
 
         val articleRepo = ArticleRepository(mockCache, mockDisk, mockCloud)
         articleRepo.refresh(10)
                 .test()
-                .assertResult(Arrays.asList(testArticle))
+                .assertResult(listOf(testArticle))
 
         verify(mockCache, never()).list(anyInt(), anyInt())
         verify(mockCache, times(1)).save(any<List<Article>>())
@@ -212,7 +219,7 @@ class ArticleRepositoryTest {
     @Test
     fun testClearCaches() {
         mockCache = mock {
-            on { deleteAll() } doReturn Single.just(Arrays.asList(testArticle))
+            on { deleteAll() } doReturn Single.just(listOf(testArticle))
         }
         mockDisk = mock {}
         mockCloud = mock {}

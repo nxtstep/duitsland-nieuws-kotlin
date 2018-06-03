@@ -5,7 +5,6 @@ import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
 import io.reactivex.Completable
 import io.reactivex.Maybe

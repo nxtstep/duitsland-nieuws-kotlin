@@ -1,6 +1,11 @@
 package io.supersimple.duitslandnieuws.data.repositories.media
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -10,7 +15,8 @@ import io.supersimple.duitslandnieuws.data.models.MediaItem
 import io.supersimple.duitslandnieuws.data.models.RenderableText
 import org.junit.Test
 import org.mockito.ArgumentMatchers
-import java.util.*
+import java.util.Date
+import java.util.HashMap
 
 class MediaRepositoryTest {
 
@@ -136,7 +142,7 @@ class MediaRepositoryTest {
     @Test
     fun testClearCaches() {
         mockCache = mock {
-            on { deleteAll() } doReturn Single.just(Arrays.asList(testMediaItem))
+            on { deleteAll() } doReturn Single.just(listOf(testMediaItem))
         }
         mockDisk = mock {
             on { deleteAll() } doReturn Completable.complete()

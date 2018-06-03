@@ -1,6 +1,12 @@
 package io.supersimple.duitslandnieuws.presentation.article
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
 import io.reactivex.Observable
 import io.reactivex.schedulers.TestScheduler
 import io.supersimple.duitslandnieuws.data.models.Article
@@ -9,7 +15,7 @@ import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepositoryTes
 import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
-import java.util.*
+import java.util.Date
 
 class ArticleListViewModelTest {
 
