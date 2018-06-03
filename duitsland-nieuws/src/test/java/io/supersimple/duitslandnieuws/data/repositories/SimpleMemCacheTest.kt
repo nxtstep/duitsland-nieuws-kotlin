@@ -1,7 +1,8 @@
 package io.supersimple.duitslandnieuws.data.repositories
 
 import org.junit.Test
-import java.util.*
+import java.util.ArrayList
+import java.util.HashMap
 
 class SimpleMemCacheTest {
     data class TestObject(
@@ -9,7 +10,7 @@ class SimpleMemCacheTest {
             val value: String
     )
 
-    class TestCache(val map: MutableMap<String, TestObject>) : SimpleMemCache<String, TestObject>(map) {
+    class TestCache(map: MutableMap<String, TestObject>) : SimpleMemCache<String, TestObject>(map) {
         override fun getId(value: TestObject): String {
             return value.id
         }
@@ -39,7 +40,7 @@ class SimpleMemCacheTest {
 
         cache.list(0, 1)
                 .test()
-                .assertResult(Arrays.asList(TestObject("1", "Test me")))
+                .assertResult(listOf(TestObject("1", "Test me")))
 
         cache.list(0, 10)
                 .test()
@@ -92,7 +93,7 @@ class SimpleMemCacheTest {
         val object2 = TestObject("2", "Object 2")
         val object3 = TestObject("3", "Object 3")
 
-        val objects = Arrays.asList(object1, object2, object3)
+        val objects = listOf(object1, object2, object3)
         cache.save(objects)
                 .test()
                 .assertResult(objects)
@@ -109,7 +110,7 @@ class SimpleMemCacheTest {
 
         cache.deleteAll()
                 .test()
-                .assertResult(Arrays.asList(object1, object3))
+                .assertResult(listOf(object1, object3))
 
         // Make sure deleting an empty cache doesn't return a value in the stream
         cache.deleteAll()

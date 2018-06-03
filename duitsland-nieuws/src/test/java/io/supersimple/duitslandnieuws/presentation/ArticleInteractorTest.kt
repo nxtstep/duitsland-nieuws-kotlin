@@ -11,7 +11,6 @@ import io.supersimple.duitslandnieuws.data.repositories.media.MediaRepositoryTes
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import java.util.*
 
 class ArticleInteractorTest {
 
@@ -37,7 +36,7 @@ class ArticleInteractorTest {
     fun testList() {
         val article2 = testArticle.copy("2")
         mockArticleRepo = mock {
-            on { list(anyInt(), anyInt()) } doReturn Maybe.just(Arrays.asList(testArticle, article2))
+            on { list(anyInt(), anyInt()) } doReturn Maybe.just(listOf(testArticle, article2))
             on { refresh(anyInt()) } doReturn Single.error(IllegalStateException("Should not be called in this test-case"))
         }
         mockMediaRepo = mock {
@@ -54,7 +53,7 @@ class ArticleInteractorTest {
     fun testRefresh() {
         val article2 = testArticle.copy("2")
         mockArticleRepo = mock {
-            on { refresh(anyInt()) } doReturn Single.just(Arrays.asList(testArticle, article2))
+            on { refresh(anyInt()) } doReturn Single.just(listOf(testArticle, article2))
         }
         mockMediaRepo = mock {
             on { get(anyString()) } doReturn Maybe.just(testMediaItem)
