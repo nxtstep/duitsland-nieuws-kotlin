@@ -3,7 +3,7 @@ package io.supersimple.duitslandnieuws.presentation.detail
 import android.support.test.InstrumentationRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import junit.framework.Assert
+import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,6 +19,6 @@ class ArticleDetailActivityTest {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = ArticleDetailActivity.createIntent(targetContext, "test-id")
         val activity = rule.launchActivity(intent)
-        Assert.assertNotNull(activity)
+        assertNotNull(activity)
     }
 }

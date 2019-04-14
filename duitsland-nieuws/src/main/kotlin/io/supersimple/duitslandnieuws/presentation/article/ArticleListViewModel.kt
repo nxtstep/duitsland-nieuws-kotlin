@@ -27,7 +27,7 @@ class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
         ERROR
     }
 
-    private var subscriptions: CompositeDisposable? = null
+    private val subscriptions: CompositeDisposable by lazy { CompositeDisposable() }
     private var articleListView: ArticleListView? = null
 
     private val dateFormatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
@@ -37,16 +37,13 @@ class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
     private var pendingPage = -1
 
     fun bindView(view: ArticleListView) {
-        subscriptions?.dispose()
-        subscriptions = CompositeDisposable()
-
         articleListView = view
 
-        subscriptions!!.add(
+        subscriptions.add(
                 stateSubject.observeOn(mainScheduler)
-                        .subscribe({ state ->
+                        .subscribe { state ->
                             articleListView?.showLoadingIndicator(state == ArticleListLoadingState.LOADING)
-                        })
+                        }
         )
 
         if (page == -1) {
@@ -55,7 +52,7 @@ class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
     }
 
     fun unbind() {
-        subscriptions?.dispose()
+        subscriptions.clear()
         articleListView = null
         if (pendingPage == page) {
             page--
@@ -63,7 +60,7 @@ class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
         pendingPage = -1
     }
 
-    fun loadFirstPage() {
+    private fun loadFirstPage() {
         page = 0
         loadNextPage()
     }
@@ -73,12 +70,12 @@ class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
             return
         }
         pendingPage = page
-        subscriptions!!.add(
+        subscriptions.add(
                 articleInteractor.list(page, PAGE_SIZE)
                         .switchIfEmpty(articleInteractor.refresh(PAGE_SIZE))
-                        .map({ convertToPresentation(it) })
-                        .doOnSubscribe({ stateSubject.onNext(ArticleListLoadingState.LOADING) })
-                        .doFinally({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
+                        .map(::convertToPresentation)
+                        .doOnSubscribe { stateSubject.onNext(ArticleListLoadingState.LOADING) }
+                        .doFinally { stateSubject.onNext(ArticleListLoadingState.FINISHED) }
                         .subscribeOn(ioScheduler)
                         .observeOn(mainScheduler)
                         .subscribe(
@@ -101,11 +98,11 @@ class ArticleListViewModel(private val articleInteractor: ArticleInteractor,
 
         clear()
 
-        subscriptions!!.add(
+        subscriptions.add(
                 articleInteractor.refresh(PAGE_SIZE)
-                        .map({ convertToPresentation(it) })
-                        .doOnSubscribe({ stateSubject.onNext(ArticleListLoadingState.LOADING) })
-                        .doFinally({ stateSubject.onNext(ArticleListLoadingState.FINISHED) })
+                        .map(::convertToPresentation)
+                        .doOnSubscribe { stateSubject.onNext(ArticleListLoadingState.LOADING) }
+                        .doFinally { stateSubject.onNext(ArticleListLoadingState.FINISHED) }
                         .subscribeOn(ioScheduler)
                         .observeOn(mainScheduler)
                         .subscribe(

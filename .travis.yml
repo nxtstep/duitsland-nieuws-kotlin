@@ -1,15 +1,38 @@
 language: android
 jdk: oraclejdk8
-env:
-  matrix:
-    - KSTOREPWD="Duitsland" KEYPWD="Duitsland"
+branches:
+  only:
+    - develop
 android:
   components:
-    - platform-tools
-    - build-tools-27.0.3
-    - android-24
+    - build-tools-$ANDROID_BUILD_TOOLS
+    - $ANDROID_TARGET
     - extra-android-m2repository
     - extra-google-m2repository
-
+    - sys-img-$ANDROID_ABI-$API_TAG-$API_LEVEL
+    - sys-img-$ANDROID_ABI-addon-google_apis-google-$API_LEVEL
+  licenses:
+    - android-sdk-license-.+
+    - google-gdk-license-.+
+env:
+  global:
+    - ANDROID_BUILD_TOOLS=27.0.3
+    - QEMU_AUDIO_DRV=none
+  matrix:
+    - API_LEVEL=24  API_TAG=android  ANDROID_TARGET=android-24  ANDROID_ABI=armeabi-v7a
+before_script:
+  # - echo no | android create avd --force -n test -k "system-image;$ANDROID_TARGET;google_apis;$ANDROID_ABI"
+  - echo "y" | android update sdk -a --no-ui --filter "$ANDROID_TARGET"
+  - echo "y" | android update sdk -a --no-ui --filter "sys-img-${ANDROID_ABI}-${API_TAG}-${API_LEVEL}"
+  - android list targets | grep -E '^id:' | awk -F '"' '{$1=""; print $2}' # list all targets
+  - if [ "$API_TAG" == "android" ]; then
+     API_TAG="default"; export API_TAG;
+    fi
+  - echo no | android create avd --force -n test -t "$ANDROID_TARGET" -b "$ANDROID_ABI" -g "$API_TAG" -c 100M
+  - emulator -avd test -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 script:
-   - ./gradlew build connectedCheck
+   - ./gradlew lint test build connectedCheck
+after_success:
+  bash <(curl -s https://codecov.io/bash) -J 'duitsland-nieuws-kotlin';

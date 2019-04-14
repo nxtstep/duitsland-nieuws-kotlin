@@ -3,6 +3,7 @@ package io.supersimple.duitslandnieuws.presentation.detail
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.times
@@ -18,6 +19,7 @@ import io.supersimple.duitslandnieuws.presentation.ArticleInteractor
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
+import java.lang.IllegalStateException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -74,9 +76,53 @@ class ArticlePresenterTest {
 
         testScheduler.triggerActions()
 
+        val inOrder = inOrder(mockView)
+
         verify(mockView, never()).showError(any())
-        verify(mockView, times(1)).showLoading(eq(true))
+        inOrder.verify(mockView).showLoading(eq(true))
+        inOrder.verify(mockView).showLoading(eq(false))
         verify(mockView, times(1)).showArticle(eq(testPresentation))
-        verify(mockView, times(1)).showLoading(eq(false))
+    }
+
+    @Test
+    fun testPresenterOnEmpty() {
+        mockIteractor = mock {
+            on { get(anyString()) } doReturn Maybe.empty<Pair<Article, Media>>()
+        }
+        val mockView: ArticleView = mock {}
+        val testScheduler = TestScheduler()
+        val presenter = ArticlePresenter("test-id", mockIteractor, testScheduler, testScheduler)
+
+        presenter.bind(mockView)
+
+        testScheduler.triggerActions()
+
+        val inOrder = inOrder(mockView)
+
+        verify(mockView).showError(any())
+        inOrder.verify(mockView).showLoading(eq(true))
+        inOrder.verify(mockView).showLoading(eq(false))
+        verify(mockView, never()).showArticle(eq(testPresentation))
+    }
+
+    @Test
+    fun testPresenterOnError() {
+        mockIteractor = mock {
+            on { get(anyString()) } doReturn Maybe.error<Pair<Article, Media>>(IllegalStateException("Test exception"))
+        }
+        val mockView: ArticleView = mock {}
+        val testScheduler = TestScheduler()
+        val presenter = ArticlePresenter("test-id", mockIteractor, testScheduler, testScheduler)
+
+        presenter.bind(mockView)
+
+        testScheduler.triggerActions()
+
+        val inOrder = inOrder(mockView)
+
+        verify(mockView).showError(any())
+        inOrder.verify(mockView).showLoading(eq(true))
+        inOrder.verify(mockView).showLoading(eq(false))
+        verify(mockView, never()).showArticle(eq(testPresentation))
     }
 }

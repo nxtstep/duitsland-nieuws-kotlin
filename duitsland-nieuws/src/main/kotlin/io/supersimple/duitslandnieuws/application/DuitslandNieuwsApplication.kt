@@ -3,6 +3,9 @@ package io.supersimple.duitslandnieuws.application
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import io.reactivex.plugins.RxJavaPlugins
+import io.supersimple.duitslandnieuws.BuildConfig
 import io.supersimple.duitslandnieuws.di.activity.ActivityComponent
 import io.supersimple.duitslandnieuws.di.activity.ActivityComponentBuilder
 import io.supersimple.duitslandnieuws.di.activity.ActivityComponentBuilderProvider
@@ -24,6 +27,13 @@ class DuitslandNieuwsApplication : Application(), ActivityComponentBuilderProvid
 
     override fun onCreate() {
         super.onCreate()
+
+        RxJavaPlugins.setErrorHandler {
+            Log.e("DuitslandNieuws", it.message)
+            if (BuildConfig.DEBUG) {
+                it.printStackTrace()
+            }
+        }
 
         DaggerAppComponent.builder()
                 .appModule(AppModule(this))
