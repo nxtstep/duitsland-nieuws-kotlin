@@ -125,7 +125,7 @@ open class ArticleDetailActivity : ComponentActivity(), ArticleView {
             val pair2 = AndroidPair<View, String>(origin.titleTextView, EXTRA_ARTICLE_TITLE_VIEW_TRANSITION)
 
             val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
-                    *arrayOf(pair1, pair2))
+                    pair1, pair2)
             ActivityCompat.startActivity(activity, intent, options.toBundle())
         }
     }
