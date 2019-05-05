@@ -29,7 +29,8 @@ ext.versions = [
         mockitoKotlin     : '1.5.0',
         dexmaker          : '2.2.0',
         wiremock          : '2.18.0',
-        slf4j             : '1.7.25'
+        slf4j             : '1.7.25',
+        detekt            : '1.0.0-RC14',
 ]
 
 ext.gradlePlugins = [
@@ -37,6 +38,7 @@ ext.gradlePlugins = [
         kotlin  : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         versions: "com.github.ben-manes:gradle-versions-plugin:$versions.benManes",
         dexcount: "com.getkeepsafe.dexcount:dexcount-gradle-plugin:$versions.dexcount",
+        detekt  : "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$versions.detekt",
 ]
 
 // App dependencies
@@ -100,11 +102,11 @@ ext.androidTest = [
 
 // test
 ext.test = [
-        junit      : "junit:junit:$versions.junit",
-        mockito    : [
+        junit   : "junit:junit:$versions.junit",
+        mockito : [
                 core  : "org.mockito:mockito-core:$versions.mockito",
                 kotlin: "com.nhaarman:mockito-kotlin:$versions.mockitoKotlin"
         ],
-        wiremock   : "com.github.tomakehurst:wiremock:$versions.wiremock",
-        slf4j      : "org.slf4j:slf4j-simple:$versions.slf4j"
+        wiremock: "com.github.tomakehurst:wiremock:$versions.wiremock",
+        slf4j   : "org.slf4j:slf4j-simple:$versions.slf4j"
 ]

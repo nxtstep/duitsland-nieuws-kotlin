@@ -10,6 +10,7 @@ buildscript {
     repositories {
         jcenter()
         google()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath gradlePlugins.android
@@ -22,11 +23,31 @@ buildscript {
         classpath gradlePlugins.versions
         // Keepsafe DexCount
         classpath gradlePlugins.dexcount
+        // Detekt
+        classpath gradlePlugins.detekt
     }
 }
 
 allprojects {
+    apply plugin: "io.gitlab.arturbosch.detekt"
     apply from: rootProject.file('functions.gradle')
+
+    detekt {
+        toolVersion = versions.detekt
+        input = files("src/main/kotlin")
+        config = rootProject.files("default-detekt-config.yml")
+
+        reports {
+            xml {
+                enabled = true
+                destination = file(relativePath("build/reports/detekt/report.xml"))
+            }
+            html {
+                enabled = true
+                destination = file(relativePath("build/reports/detekt/report.html"))
+            }
+        }
+    }
 
     repositories {
         jcenter()
