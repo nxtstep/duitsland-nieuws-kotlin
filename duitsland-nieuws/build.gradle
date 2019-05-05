@@ -162,11 +162,14 @@ dependencies {
     testImplementation test.junit
     // Mockito
     testImplementation test.mockito.core
-    testImplementation (test.mockito.kotlin) {
+    testImplementation(test.mockito.kotlin) {
         exclude group: 'org.mockito', module: 'mockito-core'
     }
 
-    testImplementation test.wiremock
+    testImplementation(test.wiremock) {
+        exclude group: 'asm', module: 'asm'
+        exclude group: 'org.json', module: 'json'
+    }
     testImplementation test.slf4j
 }
 

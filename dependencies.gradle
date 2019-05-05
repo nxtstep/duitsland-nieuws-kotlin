@@ -28,7 +28,7 @@ ext.versions = [
         mockito           : '2.13.0',
         mockitoKotlin     : '1.5.0',
         dexmaker          : '2.2.0',
-        wiremock          : '2.14.0',
+        wiremock          : '2.18.0',
         slf4j             : '1.7.25'
 ]
 
@@ -105,6 +105,6 @@ ext.test = [
                 core  : "org.mockito:mockito-core:$versions.mockito",
                 kotlin: "com.nhaarman:mockito-kotlin:$versions.mockitoKotlin"
         ],
-        wiremock   : "com.github.tomakehurst:wiremock-standalone:$versions.wiremock",
+        wiremock   : "com.github.tomakehurst:wiremock:$versions.wiremock",
         slf4j      : "org.slf4j:slf4j-simple:$versions.slf4j"
 ]
