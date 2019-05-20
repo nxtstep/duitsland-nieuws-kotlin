@@ -1,15 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-//
-// Check for outdated dependencies
-// https://github.com/ben-manes/gradle-versions-plugin
-// ./gradlew dependencyUpdates -Drevision=release
-apply plugin: 'com.github.ben-manes.versions'
 
 buildscript {
     apply from: rootProject.file('dependencies.gradle')
     repositories {
         jcenter()
         google()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath gradlePlugins.android
@@ -25,8 +21,32 @@ buildscript {
     }
 }
 
+plugins {
+    id "io.gitlab.arturbosch.detekt" version "1.0.0-RC14"
+    id "com.github.ben-manes.versions" version "0.21.0"
+}
+
 allprojects {
-    apply from: rootProject.file('functions.gradle')
+    apply from: "$rootDir/functions.gradle"
+    apply from: "$rootDir/ktlint.gradle"
+    apply from: "$rootDir/detekt.gradle"
+
+    detekt {
+        toolVersion = versions.detekt
+        input = files("src/main/kotlin")
+        config = rootProject.files("default-detekt-config.yml")
+
+        reports {
+            xml {
+                enabled = true
+                destination = file(relativePath("build/reports/detekt/report.xml"))
+            }
+            html {
+                enabled = true
+                destination = file(relativePath("build/reports/detekt/report.html"))
+            }
+        }
+    }
 
     repositories {
         jcenter()
