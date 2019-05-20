@@ -2,11 +2,11 @@ ext.sdk = [
         minVersion       : 21,
         targetVersion    : 25,
         compileVersion   : 25,
-        buildToolsVersion: "27.0.3"
+        buildToolsVersion: "28.0.3"
 ]
 
 ext.versions = [
-        gradleBuildTools  : '3.0.1',
+        gradleBuildTools  : '3.2.1',
         dexcount          : '0.8.2',
         benManes          : '0.17.0',
         androidSupport    : '25.3.1',
@@ -31,6 +31,7 @@ ext.versions = [
         wiremock          : '2.18.0',
         slf4j             : '1.7.25',
         detekt            : '1.0.0-RC14',
+        ktlint            : '0.32.0'
 ]
 
 ext.gradlePlugins = [
@@ -70,7 +71,8 @@ ext.libraries = [
                 gsonconverter: "com.squareup.retrofit2:converter-gson:$versions.retrofit2",
                 rxjava2      : "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$versions.retrofit2RxJava2"
         ],
-        picasso       : "com.squareup.picasso:picasso:$versions.picasso"
+        picasso       : "com.squareup.picasso:picasso:$versions.picasso",
+        ktlint        : "com.pinterest:ktlint:$versions.ktlint",
 
 ]
 
