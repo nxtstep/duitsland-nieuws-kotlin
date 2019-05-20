@@ -75,6 +75,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
+            testCoverageEnabled true
         }
         qa {
             applicationIdSuffix '.qa'
