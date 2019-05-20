@@ -1,6 +1,7 @@
 # Duitsland Nieuws
 
 [![Build Status](https://travis-ci.org/nxtstep/duitsland-nieuws-kotlin.svg?branch=develop)](https://travis-ci.org/nxtstep/duitsland-nieuws-kotlin)
+[![codecov](https://codecov.io/gh/nxtstep/duitsland-nieuws-kotlin/branch/master/graph/badge.svg)](https://codecov.io/gh/nxtstep/duitsland-nieuws-kotlin)
 
 App
 ---
