@@ -1,10 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-//
-// Check for outdated dependencies
-// https://github.com/ben-manes/gradle-versions-plugin
-// ./gradlew dependencyUpdates -Drevision=release
-apply plugin: 'com.github.ben-manes.versions'
-
 buildscript {
     apply from: rootProject.file('dependencies.gradle')
     repositories {
@@ -20,6 +14,10 @@ buildscript {
         // Check for outdated dependencies
         // https://github.com/ben-manes/gradle-versions-plugin
         classpath gradlePlugins.versions
+        // Keepsafe DexCount
+        classpath gradlePlugins.dexcount
+        // Koin
+        classpath gradlePlugins.koin
     }
 }
 
@@ -29,11 +27,16 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        maven { url "https://jitpack.io" }
     }
-    
+
+    //
+    // Check for outdated dependencies
+    // https://github.com/ben-manes/gradle-versions-plugin
+    // ./gradlew dependencyUpdates -Drevision=release
+    plugins.apply('com.github.ben-manes.versions')
     plugins.apply('checkstyle')
-    
+    plugins.apply('koin')
+
     checkstyle {
         toolVersion = '8.7'
     }
@@ -54,8 +57,12 @@ allprojects {
 }
 
 ext {
-    travisBuild = System.getenv("TRAVIS") == "true"
+    ciBuild = System.getenv("TRAVIS") == "true"
+    ciBuildNr = System.getenv("TRAVIS_BUILD_NUMBER")
     // allows for -Dpre-dex=false to be set
     preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
 }
 
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
