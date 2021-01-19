@@ -1,0 +1,208 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.getkeepsafe.dexcount'
+}
+
+// Manifest version information!
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 0
+def versionBuild = 'git rev-list HEAD --count'.execute([], project.rootDir).text.trim().toInteger()
+
+android {
+    compileSdkVersion sdk.compileVersion
+    buildToolsVersion sdk.buildToolsVersion
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/rxjava.properties'
+    }
+
+    defaultConfig {
+        applicationId "io.supersimple.duitslandnieuws"
+        minSdkVersion sdk.minVersion
+        targetSdkVersion sdk.targetVersion
+        versionCode versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
+        buildConfigField 'String', 'GIT_SHA', "\"{$gitSha()}\""
+        buildConfigField 'long', 'GIT_TIMESTAMP', "${gitTimestamp()}L"
+        buildConfigField 'boolean', 'GIT_CLEAN', "${gitIsClean()}"
+        buildConfigField 'String', 'GIT_LOCAL_REF', "\"${gitLocalRef()}\""
+        buildConfigField 'String', 'BUILD_TIME', "\"${buildTime()}\""
+
+        manifestPlaceholders = [
+                apiBaseUrl: "https://www.duitslandnieuws.nl/wp-json/wp/v2/",
+                articleDatabaseName: "article.db",
+        ]
+
+        if (ciBuild) {
+            buildConfigField 'String', 'CI_BUILD_NR', '\"' + ciBuildNr + '\"'
+        }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        dataBinding true
+        viewBinding true
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    lintOptions {
+        textReport true
+        textOutput 'stdout'
+        warning 'MissingTranslation'
+        warning 'InvalidPackage'
+    }
+
+    signingConfigs {
+        release {
+            storeFile rootProject.file("duitsland-nieuws-release.keystore")
+            storePassword System.getenv("KSTOREPWD")
+            keyAlias "duitsland-nieuws-app"
+            keyPassword System.getenv("KEYPWD")
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            testCoverageEnabled true
+            manifestPlaceholders["articleDatabaseName"] = "article-debug.db"
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    dexOptions {
+        // Skip pre-dexing when running on (Travis) CI or when disabled via -Dpre-dex=false.
+        preDexLibraries = preDexEnabled && !ciBuild
+    }
+}
+
+dependencies {
+    implementation libraries.androidx.core
+    implementation libraries.androidx.appcompat
+    implementation libraries.androidx.fragment
+    implementation libraries.androidx.recyclerView
+    implementation libraries.androidx.swipeRefreshLayout
+    implementation libraries.androidx.coordinatorLayout
+    implementation libraries.androidx.lifecycle.runtime
+    implementation libraries.androidx.lifecycle.commonjava8
+    // Material
+    implementation libraries.material
+    // Kotlin
+    implementation libraries.kotlin
+
+    // LiveData
+    implementation libraries.androidx.lifecycle.viewModel
+    implementation libraries.androidx.lifecycle.livedata
+    implementation libraries.androidx.paging.runtime
+
+    // Koin for Kotlin, Android & Jetpack
+    implementation libraries.koin.core
+    implementation libraries.koin.android
+    implementation libraries.koin.androidxscope
+    implementation libraries.koin.fragment
+    implementation libraries.koin.viewmodel
+
+    // RxJava
+    implementation libraries.rxJava
+    implementation libraries.rxKotlin
+    implementation libraries.rxAndroid
+    implementation libraries.rx2Coroutines
+    implementation libraries.androidx.paging.rxjava2
+
+    // Requery (SQLite) persistency
+    implementation libraries.requery.core
+    implementation libraries.requery.kotlin
+    implementation libraries.requery.android
+    kapt kaptPlugin.requery.processor
+
+    // PaperParcel
+    implementation libraries.paperParcel.core
+    implementation libraries.paperParcel.kotlin
+    kapt kaptPlugin.paperParcel.compiler
+
+    // GSON
+    implementation libraries.gson
+
+    // OkHttpClient
+    implementation libraries.okHttp.core
+    implementation libraries.okHttp.loggingInterceptor
+
+    implementation libraries.retrofit2.core
+    implementation libraries.retrofit2.gsonconverter
+    implementation libraries.retrofit2.rxjava2
+
+    // Picasso image loading
+    implementation libraries.picasso
+
+    //
+    // Test-only dependencies
+    androidTestImplementation libraries.androidx.test.core
+    androidTestImplementation libraries.androidx.test.runner
+    androidTestImplementation libraries.androidx.test.ext.junit
+    // Set this dependency to use JUnit 4 rules
+    androidTestImplementation libraries.androidx.test.rules
+    // Espresso
+    androidTestImplementation libraries.androidx.test.espresso.core
+    androidTestImplementation libraries.androidx.test.espresso.contrib
+    androidTestImplementation libraries.androidx.test.espresso.intents
+    androidTestImplementation libraries.koin.test
+    androidTestImplementation libraries.mockito.core
+    androidTestImplementation(libraries.mockito.kotlin) {
+        exclude group: 'org.mockito', module: 'mockito-core'
+    }
+
+    testImplementation libraries.androidx.test.core
+    testImplementation libraries.junit
+    // Mockito
+    testImplementation libraries.mockito.core
+    testImplementation(libraries.mockito.kotlin) {
+        exclude group: 'org.mockito', module: 'mockito-core'
+    }
+
+    testImplementation(libraries.wiremock) {
+        exclude group: 'asm', module: 'asm'
+        exclude group: 'org.json', module: 'json'
+    }
+    testImplementation libraries.slf4j
+}
+
+dexcount {
+    format = "list"
+    includeClasses = false
+    includeFieldCount = true
+    includeTotalMethodCount = false
+    orderByMethodCount = false
+    verbose = false
+    maxTreeDepth = Integer.MAX_VALUE
+    teamCityIntegration = false
+    teamCitySlug = null
+    runOnEachAssemble = true
+}
