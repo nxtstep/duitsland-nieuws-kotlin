@@ -39,7 +39,7 @@ android {
         buildConfigField 'String', 'GIT_LOCAL_REF', "\"${gitLocalRef()}\""
         buildConfigField 'String', 'BUILD_TIME', "\"${buildTime()}\""
 
-        manifestPlaceholders = [apiBaseUrl: "http://www.duitslandnieuws.nl/wp-json/wp/v2/"]
+        manifestPlaceholders = [apiBaseUrl: "https://www.duitslandnieuws.nl/wp-json/wp/v2/"]
 
         if (travisBuild) {
             buildConfigField 'String', 'TRAVIS_BUILD_NR', '\"' + System.getenv("TRAVIS_BUILD_NUMBER") + '\"'
