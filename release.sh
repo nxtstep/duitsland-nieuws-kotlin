@@ -1,6 +1,13 @@
 #!/bin/sh
 
-REPO_DIR="$( cd "$( dirname "$0" )" && pwd )"
+set -o pipefail
+
+REPO_DIR="$( cd "$( dirname "$0" )/../" && pwd )"
+
+if [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit, working tree clean" ]]; then
+  echo "Working directory dirty. Please revert or commit."
+  exit 1
+fi
 
 echo "Keystore password: "
 read -s KEYSTORE_PASS
@@ -17,13 +24,26 @@ if [ -z "${KEYPASS}" ]; then
 fi
 export KEYPWD=$KEYPASS
 
-if [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit, working tree clean" ]]; then
-  echo "Working directory dirty. Please revert or commit."
-  exit 1
+echo "Building bundle 'b' or apk 'a' [return when b]:"
+read -s INPUT
+if [[ -z "${INPUT}" ]]  ||
+   [[ "${INPUT}" == "b" ]] ||
+   [[ "${INPUT}" == "B" ]]; then
+  APP_TYPE="Bundle"
+  GRADLE_COMMAND=bundle
+  ARTIFACT="bundle/${FLAVOR}${BUILD_TYPE}"
+elif [[ "${INPUT}" == "a" ]] ||
+     [[ "${INPUT}" == "A" ]]; then
+  APP_TYPE="APK"
+  GRADLE_COMMAND=assemble
+  ARTIFACT="apk/${FLAVOR}/${BUILD_TYPE}/"
+else
+  echo "Invalid input. Abort"
+  exit 0
 fi
 
-set -ex
+echo "Creating ${APP_TYPE} for ${FLAVOR}${BUILD_TYPE}"
 
-$REPO_DIR/gradlew -p "$REPO_DIR" clean assemble -Dpre-dex=false
+${REPO_DIR}/gradlew -p "$REPO_DIR" clean ${GRADLE_COMMAND} -Dpre-dex=false
 
-open "$REPO_DIR/duitsland-nieuws/build/outputs/apk"
+open "$REPO_DIR/duitsland-nieuws/build/outputs/${ARTIFACT}/"
