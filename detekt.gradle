@@ -1,0 +1,21 @@
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+detekt {
+    toolVersion = versions.detekt
+    input = files("src/main/kotlin")
+    config = files("default-detekt-config.yml")
+    baseline = file("baseline.yml")
+
+    reports {
+        xml {
+            enabled = true
+            destination = file(relativePath("build/reports/detekt/report.xml"))
+        }
+        html {
+            enabled = true
+            destination = file(relativePath("build/reports/detekt/report.html"))
+        }
+    }
+}
+
+apply from: "$rootDir/dependencies.gradle"
