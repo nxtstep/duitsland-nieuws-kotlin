@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 // Manifest version information!
 def versionMajor = 1
 def versionMinor = 0
@@ -6,13 +8,13 @@ def versionBuild = 'git rev-list HEAD --count'.execute([], project.rootDir).text
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion sdk.compileVersion
     buildToolsVersion sdk.buildToolsVersion
+
+    namespace = "io.supersimple.duitslandnieuws"
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
@@ -46,6 +48,14 @@ android {
         }
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    viewBinding {
+        enabled true
     }
 
     dataBinding {
@@ -96,19 +106,22 @@ android {
     }
 
     configurations.all {
-        resolutionStrategy.force libraries.androidSupport
-        resolutionStrategy.force libraries.androidDesign
         resolutionStrategy.force libraries.kotlin
         resolutionStrategy.force libraries.kotlinReflect
     }
 }
 
 dependencies {
-    implementation libraries.androidSupport
-    implementation libraries.androidDesign
     //
     // Kotlin
     implementation libraries.kotlin
+
+    implementation libraries.androidx.activityx
+    implementation libraries.androidx.appcompat
+    implementation libraries.androidx.coordinatorlayout
+    implementation libraries.androidx.recyclerview
+    implementation libraries.androidx.swiperefreshlayout
+    implementation libraries.google.material
 
     // RxJava
     implementation libraries.rxJava
@@ -152,12 +165,7 @@ dependencies {
     androidTestImplementation androidTest.testRules
     // Espresso
     androidTestImplementation androidTest.espresso.core
-    androidTestImplementation(androidTest.espresso.contrib) {
-        exclude group: 'com.android.support', module: 'appcompat'
-        exclude group: 'com.android.support', module: 'support-v4'
-        exclude module: 'support-annotations'
-        exclude module: 'recyclerview-v7'
-    }
+    androidTestImplementation(androidTest.espresso.contrib)
     androidTestImplementation androidTest.espresso.intents
 
     testImplementation test.junit
@@ -174,15 +182,16 @@ dependencies {
     testImplementation test.slf4j
 }
 
-dexcount {
-    format = "list"
-    includeClasses = false
-    includeFieldCount = true
-    includeTotalMethodCount = false
-    orderByMethodCount = false
-    verbose = false
-    maxTreeDepth = Integer.MAX_VALUE
-    teamCityIntegration = false
-    teamCitySlug = null
-    runOnEachAssemble = true
+kotlin {
+    target {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_21
+        }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }

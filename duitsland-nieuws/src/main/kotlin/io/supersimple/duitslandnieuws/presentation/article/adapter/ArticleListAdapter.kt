@@ -1,19 +1,19 @@
 package io.supersimple.duitslandnieuws.presentation.article.adapter
 
-import android.databinding.ObservableArrayList
-import android.databinding.ObservableList
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableList
+import androidx.recyclerview.widget.RecyclerView
 import io.supersimple.duitslandnieuws.R
 import io.supersimple.duitslandnieuws.data.models.Article
 import io.supersimple.duitslandnieuws.presentation.article.ArticleListViewModel
 import javax.inject.Inject
 
 
-class ArticleListAdapter @Inject constructor(articleListViewModel: ArticleListViewModel) : RecyclerView.Adapter<ArticleListAdapter.ViewHolder>() {
-    private val articleListViewModel = articleListViewModel
+class ArticleListAdapter @Inject constructor(private val articleListViewModel: ArticleListViewModel) :
+    RecyclerView.Adapter<ArticleListAdapter.ViewHolder>() {
 
     interface OnArticleClickListener {
         fun onArticleClicked(articleId: String, position: Int, view: ArticleItemLayout): Unit
@@ -42,9 +42,9 @@ class ArticleListAdapter @Inject constructor(articleListViewModel: ArticleListVi
         articleListViewModel.addOnListChangedCallback(listener)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val article = articleListViewModel[position]
-        holder?.onBind(article, position, onArticleClickListener)
+        holder.onBind(article, position, onArticleClickListener)
 
         // Check for load more
         if (itemCount - position < THRESHOLD_LOAD_MORE) {
@@ -54,8 +54,10 @@ class ArticleListAdapter @Inject constructor(articleListViewModel: ArticleListVi
 
     override fun getItemCount(): Int = articleListViewModel.size
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder =
-            ViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.card_article, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.card_article, parent, false)
+        )
 
     companion object {
         const val THRESHOLD_LOAD_MORE = 2

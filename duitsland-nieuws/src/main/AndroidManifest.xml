@@ -17,7 +17,8 @@
 
         <activity
             android:name=".presentation.article.ArticleListActivity"
-            android:theme="@style/ArticleListTheme">
+            android:theme="@style/ArticleListTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +28,8 @@
         <activity
             android:name=".presentation.detail.ArticleDetailActivity"
             android:parentActivityName=".presentation.article.ArticleListActivity"
-            android:theme="@style/ArticleDetailTheme" />
+            android:theme="@style/ArticleDetailTheme"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -29,7 +29,7 @@ class DuitslandNieuwsApplication : Application(), ActivityComponentBuilderProvid
         super.onCreate()
 
         RxJavaPlugins.setErrorHandler {
-            Log.e("DuitslandNieuws", it.message)
+            Log.e("DuitslandNieuws", it.message ?: "No message")
             if (BuildConfig.DEBUG) {
                 it.printStackTrace()
             }

@@ -1,8 +1,8 @@
 package io.supersimple.duitslandnieuws.presentation
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import io.supersimple.duitslandnieuws.application.DuitslandNieuwsApplication
 import io.supersimple.duitslandnieuws.di.activity.ActivityComponentBuilderProvider
 import io.supersimple.duitslandnieuws.di.fragment.FragmentComponent
@@ -13,6 +13,9 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
+/**
+ * Dagger component activity -> Migrate to Hilt
+ */
 abstract class ComponentActivity : AppCompatActivity(), FragmentComponentBuilderProvider {
     @Inject lateinit var fragmentComponentBuilderMap:
             Map<Class<out Fragment>, @JvmSuppressWildcards Provider<FragmentComponentBuilder<*, *>>>

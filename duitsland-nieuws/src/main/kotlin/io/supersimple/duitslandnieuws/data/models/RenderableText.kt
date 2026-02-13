@@ -31,7 +31,7 @@ data class RenderableText(
             override fun createFromParcel(source: Parcel?): RenderableText {
                 source?.apply {
                     val protected = readInt() == 1
-                    val text = readString()
+                    val text = readString() ?: ""
 
                     return RenderableText(rendered = text, protected = protected)
                 }

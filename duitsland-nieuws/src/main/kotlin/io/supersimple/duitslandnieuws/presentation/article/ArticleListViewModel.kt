@@ -1,6 +1,6 @@
 package io.supersimple.duitslandnieuws.presentation.article
 
-import android.databinding.ObservableArrayList
+import androidx.databinding.ObservableArrayList
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject

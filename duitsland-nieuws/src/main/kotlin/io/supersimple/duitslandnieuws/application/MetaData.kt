@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 
 inline fun <T> Context.getMetaData(func: Bundle.() -> T): T {
+    @Suppress("Deprecation")
     return packageManager
             .getApplicationInfo(packageName, PackageManager.GET_META_DATA)
             .metaData

@@ -5,6 +5,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.requery.Persistable
 import io.requery.kotlin.eq
+import io.requery.query.Condition
 import io.requery.reactivex.KotlinReactiveEntityStore
 import io.supersimple.duitslandnieuws.data.models.Article
 
@@ -49,9 +50,10 @@ class ArticleDisk(private val store: KotlinReactiveEntityStore<Persistable>) {
             store.delete(article)
                     .toSingleDefault(article)
 
+    @Suppress("UNCHECKED_CAST")
     private fun getDAO(id: String): Maybe<ArticleDAO> =
             store.select(ArticleDAO::class)
-                    .where(ArticleDAO::id eq id)
+                .where((ArticleDAO::id eq id) as Condition<String, *>)
                     .get()
                     .maybe()
 }

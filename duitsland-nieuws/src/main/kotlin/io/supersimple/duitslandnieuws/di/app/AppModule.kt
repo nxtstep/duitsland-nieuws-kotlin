@@ -14,7 +14,7 @@ class AppModule(val context: Context) {
     @Provides
     @Singleton
     @BaseUrl
-    fun provideBaseUrl(): String = context.getMetaData { getString("API_BASE_URL") }
+    fun provideBaseUrl(): String = context.getMetaData { requireNotNull(getString("API_BASE_URL")) }
 
     @Provides
     @ApplicationContext

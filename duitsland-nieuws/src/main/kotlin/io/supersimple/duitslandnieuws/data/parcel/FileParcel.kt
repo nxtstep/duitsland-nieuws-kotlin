@@ -26,6 +26,7 @@ fun File.writeParcelable(item: Parcelable, provider: ParcelableProvider): Boolea
 }
 
 @Throws(IOException::class)
+@Suppress("Deprecation")
 inline fun <reified T : Parcelable> File.readParcelable(provider: ParcelableProvider): T? {
     if (exists()) {
         val reader = provider.obtain()

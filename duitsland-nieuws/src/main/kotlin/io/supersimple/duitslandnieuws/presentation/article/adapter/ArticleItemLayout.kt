@@ -9,16 +9,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.card_article.view.iv_article_image
-import kotlinx.android.synthetic.main.card_article.view.tv_article_excerpt
-import kotlinx.android.synthetic.main.card_article.view.tv_article_pub_date
-import kotlinx.android.synthetic.main.card_article.view.tv_article_title
+import io.supersimple.duitslandnieuws.databinding.CardArticleBinding
 
 class ArticleItemLayout : LinearLayout {
-    lateinit var titleTextView: TextView
-    lateinit var excerptTextView: TextView
-    lateinit var pubDateTextView: TextView
-    lateinit var imageView: ImageView
+    val titleTextView: TextView get() = binding.tvArticleTitle
+    val excerptTextView: TextView get() = binding.tvArticleExcerpt
+    val pubDateTextView: TextView get() = binding.tvArticlePubDate
+    val imageView: ImageView get() = binding.ivArticleImage
+
+    private lateinit var binding: CardArticleBinding
 
     constructor(context: Context) : super(context)
 
@@ -33,10 +32,7 @@ class ArticleItemLayout : LinearLayout {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        titleTextView = this.tv_article_title
-        excerptTextView = this.tv_article_excerpt
-        imageView = this.iv_article_image
-        pubDateTextView = this.tv_article_pub_date
+        binding = CardArticleBinding.bind(this)
     }
 
     override fun onAttachedToWindow() {
