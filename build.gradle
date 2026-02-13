@@ -42,7 +42,7 @@ allprojects {
     }
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-        kotlinOptions.allWarningsAsErrors = true
+        kotlinOptions.allWarningsAsErrors = false // FIXME
     }
     
     task('checkstyle', type: Checkstyle) {

@@ -4,7 +4,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'com.getkeepsafe.dexcount'
+    //id 'com.getkeepsafe.dexcount'
 }
 
 // Manifest version information!
@@ -57,7 +57,7 @@ android {
     }
 
     buildFeatures {
-        buildConfig = true
+        buildConfig true
         dataBinding true
         viewBinding true
     }
@@ -191,18 +191,18 @@ dependencies {
     testImplementation libraries.slf4j
 }
 
-dexcount {
-    format = "list"
-    includeClasses = false
-    includeFieldCount = true
-    includeTotalMethodCount = false
-    orderByMethodCount = false
-    verbose = false
-    maxTreeDepth = Integer.MAX_VALUE
-    teamCityIntegration = false
-    teamCitySlug = null
-    runOnEachAssemble = true
-}
+// dexcount {
+//     format = "list"
+//     includeClasses = false
+//     includeFieldCount = true
+//     includeTotalMethodCount = false
+//     orderByMethodCount = false
+//     verbose = false
+//     maxTreeDepth = Integer.MAX_VALUE
+//     teamCityIntegration = false
+//     teamCitySlug = null
+//     runOnEachAssemble = true
+// }
 
 kotlin {
     target {
